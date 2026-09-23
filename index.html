@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>責任感特工大行動 - 小一人文科遊戲</title>
+    <title>責任感特工大行動 - 升級版</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
-        <!-- 頂部資訊欄 -->
+        <!-- 頂部狀態欄 -->
         <header class="game-header">
             <h1 class="game-title">🕵🏻‍♂️ 責任感特工大行動</h1>
             <div class="status-bar">
-                <span id="level-indicator" class="badge">關卡 1/3</span>
+                <span id="level-indicator" class="badge">準備中...</span>
                 <span id="timer-display" class="badge timer hidden">⏱️ 時間: 30s</span>
                 <span id="score-display" class="badge score">⭐ 積分: 0</span>
             </div>
@@ -20,20 +20,23 @@
 
         <!-- 畫面 1: 開始歡迎頁 -->
         <section id="start-screen" class="screen active">
-            <div class="avatar-box">
-                <div class="leo-avatar">👽</div>
-                <div class="speech-bubble">
-                    <p>特工你好！我是<b>咕嚕 (Leo)</b>！我的座位亂糟糟的，請幫我將物品分類，教我什麼是<b>責任感</b>吧！</p>
-                </div>
+            <!-- 融入 image_3：開心揮手的 Leo -->
+            <img class="hero-banner" src="assets/scene_welcome.png" alt="Welcome to G1" onerror="this.src='https://via.placeholder.com/800x400?text=Please+add+scene_welcome.png'">
+            
+            <div class="speech-bubble large-bubble">
+                <p>各位 G1 特工你好！我是<b>咕嚕 (Leo)</b>！第一天上學，我的物品全亂了，請幫我將物品分類，教我甚麼是<b>責任感</b>吧！</p>
             </div>
-            <button id="start-btn" class="btn primary-btn">🚀 開始特工任務</button>
+            <button id="start-btn" class="btn primary-btn pulse">🚀 接受特工任務</button>
         </section>
 
         <!-- 畫面 2: 遊戲關卡主畫面 -->
         <section id="game-screen" class="screen">
-            <div class="level-banner">
+            <!-- 動態佈景圖 (將根據關卡切換 image_5 或 image_6) -->
+            <img id="level-banner-img" class="hero-banner" src="" alt="Level Scene">
+            
+            <div class="level-banner-text">
                 <h2 id="level-title">第一關：個人座位整理</h2>
-                <p id="level-desc">請將下面的物品拖拽或點選放進正確的位置！</p>
+                <p id="level-desc">請將下方物品拖拽放到正確的容器中！</p>
             </div>
 
             <!-- 待分類物品區 -->
@@ -44,42 +47,36 @@
                 <div class="target-box" data-type="bag">
                     <div class="target-icon">🎒</div>
                     <h3>放進書包</h3>
-                    <p class="target-hint">上學用品</p>
                 </div>
                 <div class="target-box" data-type="trash">
                     <div class="target-icon">🗑️</div>
-                    <h3>丟進垃圾桶</h3>
-                    <p class="target-hint">廢棄雜物</p>
+                    <h3>丟垃圾桶</h3>
                 </div>
                 <div class="target-box" data-type="home">
                     <div class="target-icon">🏠</div>
                     <h3>留在屋企</h3>
-                    <p class="target-hint">玩具/非上學用品</p>
                 </div>
             </div>
 
             <!-- 第三關專用 (⭕ / ❌ 判斷區) -->
             <div id="choice-container" class="choice-container hidden">
-                <button class="choice-btn circle-btn" data-choice="circle">⭕ 有責任感</button>
+                <button class="choice-btn circle-btn" data-choice="circle">⭕ 負責任的行為</button>
                 <button class="choice-btn cross-btn" data-choice="cross">❌ 沒有責任感</button>
             </div>
         </section>
 
         <!-- 畫面 3: 通關結算頁 -->
         <section id="end-screen" class="screen">
-            <div class="avatar-box">
-                <div class="leo-avatar happy">👽🎉</div>
-                <h2>🎉 任務成功！特工集合！</h2>
-            </div>
+            <img class="hero-banner" src="assets/scene_welcome.png" alt="Success">
             <div class="result-box">
-                <p>恭喜你成功通過所有考驗，教懂了 Leo 什麼是責任感！</p>
+                <h2>🎉 任務大成功！</h2>
+                <p>恭喜你成功通過所有考驗！</p>
                 <div class="golden-motto">「自己的事，自己做！」</div>
                 <div class="stars-earned">⭐⭐⭐⭐⭐</div>
             </div>
-            <button id="restart-btn" class="btn primary-btn">🔄 重新挑戰</button>
+            <button id="restart-btn" class="btn primary-btn">🔄 再次挑戰</button>
         </section>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
