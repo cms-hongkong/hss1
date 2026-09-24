@@ -55,10 +55,10 @@
       border-left: 5px solid var(--primary); text-align: left; line-height: 1.6;
     }
     
-    /* 專屬第二關提示重點字樣 */
+    /* 專屬第二關提示重點字樣 (分為兩行) */
     .highlight-text {
-      font-size: 26px; font-weight: 900; color: #D32F2F; background: #FFCDD2; 
-      padding: 2px 10px; border-radius: 8px; display: inline-block; margin: 5px 0;
+      font-size: 24px; font-weight: 900; color: #D32F2F; background: #FFCDD2; 
+      padding: 4px 12px; border-radius: 8px; display: block; margin: 8px auto; width: fit-content; text-align: center;
     }
 
     .items-pool {
@@ -200,7 +200,6 @@
     candy_trash: `<svg viewBox="0 0 80 80"><path d="M 25 35 Q 35 20 45 30 T 55 35 Q 60 50 45 50 T 25 55 Z" fill="#FFE082" stroke="#F57F17" stroke-width="2"/><path d="M 30 35 L 45 45 M 35 50 L 50 35 M 40 25 L 40 40" stroke="#F57F17" stroke-width="2"/><polygon points="25,40 10,30 15,50" fill="#FFCC80" stroke="#F57F17" stroke-width="1"/><polygon points="55,40 70,30 65,50" fill="#FFCC80" stroke="#F57F17" stroke-width="1"/></svg>`,
     banana_peel: `<svg viewBox="0 0 80 80"><path d="M35,60 C20,40 25,20 25,20 C35,35 40,45 40,55" fill="#FFEB3B" stroke="#F9A825" stroke-width="2"/><path d="M45,60 C60,40 55,20 55,20 C45,35 40,45 40,55" fill="#FFEB3B" stroke="#F9A825" stroke-width="2"/><path d="M40,65 C40,40 35,25 40,25 C45,25 40,40 40,65" fill="#FFEE58" stroke="#F9A825" stroke-width="2"/><circle cx="40" cy="65" r="4" fill="#5D4037"/></svg>`,
     
-    /* 第二關專屬新增物品 */
     pe_uniform: `<svg viewBox="0 0 80 80"><path d="M20,25 L30,20 L50,20 L60,25 L68,40 L55,45 L50,32 L50,70 L30,70 L30,32 L25,45 L12,40 Z" fill="#FFF" stroke="#1E88E5" stroke-width="3"/><path d="M30,20 Q40,30 50,20" fill="none" stroke="#1E88E5" stroke-width="3"/><rect x="35" y="35" width="10" height="15" fill="#FFCA28"/></svg>`,
     school_uniform: `<svg viewBox="0 0 80 80"><path d="M20,25 L30,20 L50,20 L60,25 L68,40 L55,45 L50,32 L50,70 L30,70 L30,32 L25,45 L12,40 Z" fill="#FAFAFA" stroke="#9E9E9E" stroke-width="2"/><polygon points="30,20 40,35 35,20" fill="#EEEEEE" stroke="#9E9E9E" stroke-width="1"/><polygon points="50,20 40,35 45,20" fill="#EEEEEE" stroke="#9E9E9E" stroke-width="1"/><polygon points="38,32 42,32 45,55 40,60 35,55" fill="#D32F2F"/><line x1="40" y1="35" x2="40" y2="70" stroke="#E0E0E0" stroke-width="2"/></svg>`,
     beyblade: `<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="28" fill="#CFD8DC" stroke="#455A64" stroke-width="2"/><circle cx="40" cy="40" r="20" fill="#1E88E5" stroke="#0D47A1" stroke-width="2"/><circle cx="40" cy="40" r="8" fill="#FFC107" stroke="#F57F17" stroke-width="2"/><polygon points="40,8 45,15 35,15" fill="#D32F2F"/><polygon points="40,72 45,65 35,65" fill="#D32F2F"/><polygon points="8,40 15,35 15,45" fill="#D32F2F"/><polygon points="72,40 65,35 65,45" fill="#D32F2F"/><circle cx="40" cy="25" r="2" fill="#FFF"/><circle cx="40" cy="55" r="2" fill="#FFF"/><circle cx="25" cy="40" r="2" fill="#FFF"/><circle cx="55" cy="40" r="2" fill="#FFF"/></svg>`,
@@ -210,10 +209,45 @@
     trash: `<svg viewBox="0 0 80 80"><rect x="24" y="25" width="32" height="45" rx="3" fill="#90A4AE"/><rect x="20" y="18" width="40" height="7" rx="3" fill="#607D8B"/><line x1="32" y1="33" x2="32" y2="60" stroke="#CFD8DC" stroke-width="3"/><line x1="40" y1="33" x2="40" y2="60" stroke="#CFD8DC" stroke-width="3"/><line x1="48" y1="33" x2="48" y2="60" stroke="#CFD8DC" stroke-width="3"/></svg>`,
     home: `<svg viewBox="0 0 80 80"><rect x="18" y="35" width="44" height="35" fill="#8D6E63"/><polygon points="10,35 40,12 70,35" fill="#5D4037"/><rect x="35" y="48" width="10" height="22" fill="#D7CCC8"/></svg>`,
 
-    /* 關卡 3 專屬情境圖 */
-    scene_q1: `<svg viewBox="0 0 160 100"><rect x="15" y="25" width="60" height="45" rx="5" fill="#37474F"/><rect x="20" y="30" width="50" height="35" fill="#81D4FA"/><text x="32" y="55" font-size="20">📺</text><rect x="95" y="35" width="40" height="45" rx="8" fill="#1E88E5"/><rect x="105" y="45" width="20" height="25" rx="4" fill="#42A5F5"/><path d="M105 35 C105 20, 125 20, 125 35" fill="none" stroke="#0D47A1" stroke-width="4"/><circle cx="115" cy="55" r="3" fill="#FFCA28"/></svg>`,
-    scene_q2: `<svg viewBox="0 0 160 100"><path d="M20 40 L35 25 L60 35 L70 60 L50 80 L25 70 Z" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="3"/><path d="M20 40 L45 55 L60 35 M45 55 L50 80 M45 55 L10 55" fill="none" stroke="#90A4AE" stroke-width="2"/><rect x="95" y="25" width="35" height="50" rx="3" fill="#90A4AE"/><rect x="90" y="18" width="45" height="7" rx="3" fill="#607D8B"/><line x1="105" y1="35" x2="105" y2="65" stroke="#CFD8DC" stroke-width="3"/><line x1="112" y1="35" x2="112" y2="65" stroke="#CFD8DC" stroke-width="3"/><line x1="120" y1="35" x2="120" y2="65" stroke="#CFD8DC" stroke-width="3"/></svg>`,
-    scene_q3: `<svg viewBox="0 0 160 100"><rect x="30" y="65" width="100" height="15" fill="#B3E5FC" stroke="#4FC3F7" stroke-width="2"/><line x1="50" y1="65" x2="50" y2="72" stroke="#0288D1" stroke-width="2"/><line x1="70" y1="65" x2="70" y2="72" stroke="#0288D1" stroke-width="2"/><line x1="90" y1="65" x2="90" y2="72" stroke="#0288D1" stroke-width="2"/><line x1="110" y1="65" x2="110" y2="72" stroke="#0288D1" stroke-width="2"/><rect x="40" y="30" width="70" height="15" rx="3" transform="rotate(-10 75 35)" fill="#FFD54F"/><polygon points="108,13 125,18 115,31" fill="#FFAB91"/><polygon points="120,16 125,18 122,23" fill="#424242"/><rect x="30" y="30" width="35" height="20" rx="3" fill="#EEEEEE" stroke="#BDBDBD" stroke-width="2"/></svg>`
+    /* 關卡 3 專屬情境圖（尺寸放大版） */
+    scene_q1: `<svg viewBox="0 0 200 120">
+        <!-- 電視 -->
+        <rect x="20" y="30" width="70" height="55" rx="6" fill="#37474F"/>
+        <rect x="26" y="36" width="58" height="43" fill="#81D4FA"/>
+        <text x="40" y="66" font-size="24">📺</text>
+        <circle cx="95" cy="58" r="3" fill="#FFCA28"/>
+        <!-- 書包 -->
+        <rect x="115" y="40" width="50" height="55" rx="10" fill="#1E88E5"/>
+        <rect x="127" y="55" width="26" height="30" rx="5" fill="#42A5F5"/>
+        <path d="M125 40 C125 20, 155 20, 155 40" fill="none" stroke="#0D47A1" stroke-width="5"/>
+        <circle cx="140" cy="70" r="4" fill="#FFCA28"/>
+    </svg>`,
+    
+    scene_q2: `<svg viewBox="0 0 200 120">
+        <!-- 廢紙 -->
+        <path d="M25 50 L45 30 L75 45 L85 75 L60 100 L30 85 Z" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="4"/>
+        <path d="M25 50 L55 70 L75 45 M55 70 L60 100 M55 70 L15 70" fill="none" stroke="#90A4AE" stroke-width="3"/>
+        <!-- 垃圾桶 -->
+        <rect x="120" y="30" width="45" height="65" rx="4" fill="#90A4AE"/>
+        <rect x="114" y="22" width="57" height="9" rx="4" fill="#607D8B"/>
+        <line x1="130" y1="45" x2="130" y2="85" stroke="#CFD8DC" stroke-width="4"/>
+        <line x1="142" y1="45" x2="142" y2="85" stroke="#CFD8DC" stroke-width="4"/>
+        <line x1="154" y1="45" x2="154" y2="85" stroke="#CFD8DC" stroke-width="4"/>
+    </svg>`,
+    
+    scene_q3: `<svg viewBox="0 0 200 120">
+        <!-- 間尺 -->
+        <rect x="25" y="70" width="150" height="22" fill="#B3E5FC" stroke="#4FC3F7" stroke-width="3"/>
+        <line x1="50" y1="70" x2="50" y2="80" stroke="#0288D1" stroke-width="3"/>
+        <line x1="80" y1="70" x2="80" y2="80" stroke="#0288D1" stroke-width="3"/>
+        <line x1="110" y1="70" x2="110" y2="80" stroke="#0288D1" stroke-width="3"/>
+        <line x1="140" y1="70" x2="140" y2="80" stroke="#0288D1" stroke-width="3"/>
+        <!-- 鉛筆 -->
+        <rect x="40" y="35" width="100" height="20" rx="4" transform="rotate(-10 90 45)" fill="#FFD54F"/>
+        <polygon points="142,12 165,18 150,37" fill="#FFAB91"/>
+        <polygon points="158,16 165,18 160,25" fill="#424242"/>
+        <rect x="25" y="36" width="45" height="26" rx="4" transform="rotate(-10 45 45)" fill="#EEEEEE" stroke="#BDBDBD" stroke-width="2"/>
+    </svg>`
   };
 
   // 🎮 遊戲關卡資料庫
@@ -226,7 +260,7 @@
       items: [
         { id: "book", name: "人文書", svg: SVG_LIB.book, type: "bag" },
         { id: "music", name: "音樂書", svg: SVG_LIB.music_book, type: "bag" },
-        { id: "stationery", name: "文具", svg: SVG_LIB.stationery, type: "bag" },
+        { id: "stationery", name: "文具間尺", svg: SVG_LIB.stationery, type: "bag" },
         { id: "plush", name: "毛公仔", svg: SVG_LIB.plush_toy, type: "home" },
         { id: "robot", name: "機械人", svg: SVG_LIB.robot, type: "home" },
         { id: "car", name: "玩具車", svg: SVG_LIB.car, type: "home" },
@@ -237,7 +271,7 @@
     },
     {
       title: "第二關：按表執書包",
-      prompt: "咕嚕：「明天有 <span class='highlight-text'>上人文課、體育課</span>，請把需要帶的東西放進書包，不要帶其他東西！」",
+      prompt: "咕嚕：「明天需要： <span class='highlight-text'>上人文課</span> <span class='highlight-text'>上體育課</span> 請把需要的東西放進書包，不要帶其他東西！」",
       mode: "packing",
       leoSvg: SVG_LIB.leoHappy,
       items: [
@@ -291,6 +325,17 @@
     } catch(e) {}
   }
 
+  // 🎯 Fisher-Yates 陣列隨機打亂演算法 (Shuffle)
+  function shuffleArray(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  }
+
   // 🎯 遊戲狀態管理
   let currentLvlIdx = 0;
   let score = 0;
@@ -325,7 +370,9 @@
     document.getElementById('game-leo-svg').innerHTML = lvl.leoSvg;
     document.getElementById('level-prompt').innerHTML = `<b>${lvl.title}</b><br>${lvl.prompt}`;
 
-    remainingItems = [...lvl.items];
+    // 將物品隨機打亂次序 (Shuffle)
+    remainingItems = shuffleArray([...lvl.items]);
+    
     selectedItem = null;
     draggedItemId = null;
     document.getElementById('items-pool').innerHTML = '';
@@ -435,11 +482,11 @@
     if (!remainingItems.length) return;
     const item = remainingItems[0];
     document.getElementById('items-pool').innerHTML = `
-      <div class="item-card" style="width:90%; max-width:400px; padding:20px; font-size:16px; cursor:default; background:#FAFAFA;">
-        <div style="width:100%; height:130px; display:flex; justify-content:center; align-items:center; margin-bottom:15px; border-radius:10px; background:white; box-shadow:inset 0 2px 5px rgba(0,0,0,0.05);">
-          <div style="width:200px; height:120px;">${item.svg}</div>
+      <div class="item-card" style="width:90%; max-width:450px; padding:25px; font-size:16px; cursor:default; background:#FAFAFA;">
+        <div style="width:100%; height:160px; display:flex; justify-content:center; align-items:center; margin-bottom:15px; border-radius:10px; background:white; box-shadow:inset 0 2px 5px rgba(0,0,0,0.05);">
+          <div style="width:280px; height:140px;">${item.svg}</div>
         </div>
-        <div style="font-weight:bold; color:var(--primary-dark); font-size:18px;">${item.name}</div>
+        <div style="font-weight:bold; color:var(--primary-dark); font-size:20px;">${item.name}</div>
       </div>
     `;
   }
