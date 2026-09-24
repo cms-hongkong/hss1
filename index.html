@@ -1,82 +1,567 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>責任感特工大行動 - 升級版</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>責任感特工大行動 - 向量繪圖版</title>
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E7D32;
+      --secondary: #FF9800;
+      --accent: #FFC107;
+      --danger: #FF5722;
+      --bg: #E8F5E9;
+      --card-bg: #FFFFFF;
+      --text: #2C3E50;
+    }
+
+    * { box-sizing: border-box; font-family: 'PingFang HK', 'Microsoft JhengHei', 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    body { background-color: #C8E6C9; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
+
+    header {
+      background: var(--primary-dark);
+      color: white;
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      padding: 15px 0;
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    h1 { margin: 0; font-size: 22px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      border: 4px solid var(--primary-dark);
+      border-top: none;
+      text-align: center;
+    }
+
+    .btn {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .btn-submit { background: var(--primary); font-size: 18px; padding: 12px 30px; }
+    .btn-gold { background: var(--accent); color: #333; }
+    .btn-circle { background: #4CAF50; font-size: 18px; }
+    .btn-cross { background: #F44336; font-size: 18px; }
+
+    .stats-bar {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--text);
+      margin-bottom: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    /* SVG 繪圖與畫面容器 */
+    .hero-avatar { width: 140px; height: 140px; margin: 10px auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
+    .speech-bubble {
+      background: white;
+      padding: 15px;
+      border-radius: 15px;
+      font-size: 16px;
+      color: var(--text);
+      margin: 10px auto 20px;
+      max-width: 450px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    .items-pool {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      min-height: 120px;
+      background: rgba(255,255,255,0.6);
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .item-card {
+      background: white;
+      padding: 8px;
+      border-radius: 12px;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 95px;
+      border: 2px solid #E0E0E0;
+      transition: transform 0.2s, border 0.2s;
+    }
+    .item-card.selected { border: 3px solid #2196F3; transform: scale(1.08); }
+    .item-card svg { width: 60px; height: 60px; pointer-events: none; }
+    .item-name { font-size: 13px; font-weight: bold; margin-top: 5px; color: #333; pointer-events: none; }
+
+    .targets-container { display: flex; justify-content: space-around; gap: 10px; width: 100%; }
+    .target-box {
+      flex: 1;
+      background: white;
+      border: 3px dashed #81C784;
+      border-radius: 15px;
+      padding: 10px 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .target-box:hover { background: #E8F5E9; border-color: var(--primary); }
+    .target-box svg { width: 50px; height: 50px; pointer-events: none; }
+    .target-box h3 { font-size: 15px; color: var(--primary-dark); margin-top: 5px; pointer-events: none;}
+
+    .choice-container { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
+    .hidden { display: none !important; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 10px; border-bottom: 1px solid #E2E8F0; text-align: center; }
+    th { background-color: #E8F5E9; color: var(--primary-dark); }
+  </style>
 </head>
 <body>
-    <div class="game-container">
-        <!-- 頂部狀態欄 -->
-        <header class="game-header">
-            <h1 class="game-title">🕵🏻‍♂️ 責任感特工大行動</h1>
-            <div class="status-bar">
-                <span id="level-indicator" class="badge">準備中...</span>
-                <span id="timer-display" class="badge timer hidden">⏱️ 時間: 30s</span>
-                <span id="score-display" class="badge score">⭐ 積分: 0</span>
-            </div>
-        </header>
 
-        <!-- 畫面 1: 開始歡迎頁 -->
-        <section id="start-screen" class="screen active">
-            <!-- 融入 image_3：開心揮手的 Leo -->
-            <img class="hero-banner" src="assets/scene_welcome.png" alt="Welcome to G1" onerror="this.src='https://via.placeholder.com/800x400?text=Please+add+scene_welcome.png'">
-            
-            <div class="speech-bubble large-bubble">
-                <p>各位 G1 特工你好！我是<b>咕嚕 (Leo)</b>！第一天上學，我的物品全亂了，請幫我將物品分類，教我甚麼是<b>責任感</b>吧！</p>
-            </div>
-            <button id="start-btn" class="btn primary-btn pulse">🚀 接受特工任務</button>
-        </section>
+<header>
+  <h1>🕵🏻‍♂️ 責任感特工大行動</h1>
+</header>
 
-        <!-- 畫面 2: 遊戲關卡主畫面 -->
-        <section id="game-screen" class="screen">
-            <!-- 動態佈景圖 (將根據關卡切換 image_5 或 image_6) -->
-            <img id="level-banner-img" class="hero-banner" src="" alt="Level Scene">
-            
-            <div class="level-banner-text">
-                <h2 id="level-title">第一關：個人座位整理</h2>
-                <p id="level-desc">請將下方物品拖拽放到正確的容器中！</p>
-            </div>
-
-            <!-- 待分類物品區 -->
-            <div id="items-pool" class="items-pool"></div>
-
-            <!-- 放置目標區 (分類箱) -->
-            <div id="targets-container" class="targets-container">
-                <div class="target-box" data-type="bag">
-                    <div class="target-icon">🎒</div>
-                    <h3>放進書包</h3>
-                </div>
-                <div class="target-box" data-type="trash">
-                    <div class="target-icon">🗑️</div>
-                    <h3>丟垃圾桶</h3>
-                </div>
-                <div class="target-box" data-type="home">
-                    <div class="target-icon">🏠</div>
-                    <h3>留在屋企</h3>
-                </div>
-            </div>
-
-            <!-- 第三關專用 (⭕ / ❌ 判斷區) -->
-            <div id="choice-container" class="choice-container hidden">
-                <button class="choice-btn circle-btn" data-choice="circle">⭕ 負責任的行為</button>
-                <button class="choice-btn cross-btn" data-choice="cross">❌ 沒有責任感</button>
-            </div>
-        </section>
-
-        <!-- 畫面 3: 通關結算頁 -->
-        <section id="end-screen" class="screen">
-            <img class="hero-banner" src="assets/scene_welcome.png" alt="Success">
-            <div class="result-box">
-                <h2>🎉 任務大成功！</h2>
-                <p>恭喜你成功通過所有考驗！</p>
-                <div class="golden-motto">「自己的事，自己做！」</div>
-                <div class="stars-earned">⭐⭐⭐⭐⭐</div>
-            </div>
-            <button id="restart-btn" class="btn primary-btn">🔄 再次挑戰</button>
-        </section>
+<div class="container">
+  <!-- 1. 主選單 -->
+  <div id="menu-screen">
+    <div class="hero-avatar" id="menu-leo-svg"></div>
+    <div class="speech-bubble">
+      特工你好！我是<b>咕嚕 (Leo)</b>！我的座位亂糟糟的，請幫我將物品分類，教我甚麼是<b>責任感</b>吧！
     </div>
-    <script src="script.js"></script>
+    
+    <div>
+      <button class="btn btn-submit" onclick="startLevel(0)">🚀 開始特工任務</button> <br>
+      <button class="btn btn-gold" onclick="showLeaderboard()">🏆 查看榮譽榜</button>
+    </div>
+  </div>
+
+  <!-- 2. 遊戲主畫面 -->
+  <div id="game-screen" class="hidden">
+    <div class="stats-bar">
+      <div>關卡: <span id="current-level-txt">1/3</span></div>
+      <div>積分: <span id="score-txt">0</span></div>
+      <div id="timer-box" class="hidden" style="color:var(--danger)">⏱️ 時間: <span id="timer-txt">30</span>s</div>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:center; gap:15px; margin-bottom:10px;">
+      <div style="width:70px; height:70px;" id="game-leo-svg"></div>
+      <div class="speech-bubble" id="level-prompt" style="margin:0; text-align:left;">題目讀取中...</div>
+    </div>
+
+    <!-- 待分類物品池 -->
+    <div id="items-pool" class="items-pool"></div>
+
+    <!-- 分類目標區 -->
+    <div id="targets-container" class="targets-container">
+      <!-- Added drag and drop events -->
+      <div class="target-box" data-type="bag" onclick="handleTargetClick('bag')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'bag')">
+        <div id="target-bag-svg"></div>
+        <h3>放進書包</h3>
+      </div>
+      <div class="target-box" data-type="trash" onclick="handleTargetClick('trash')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'trash')">
+        <div id="target-trash-svg"></div>
+        <h3>丟垃圾桶</h3>
+      </div>
+      <div class="target-box" data-type="home" onclick="handleTargetClick('home')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'home')">
+        <div id="target-home-svg"></div>
+        <h3>留在屋企</h3>
+      </div>
+    </div>
+
+    <!-- 第三關：選擇題按鈕 -->
+    <div id="choice-container" class="choice-container hidden">
+      <button class="btn btn-circle" onclick="handleChoiceClick('circle')">⭕ 有責任感</button>
+      <button class="btn btn-cross" onclick="handleChoiceClick('cross')">❌ 沒有責任感</button>
+    </div>
+
+    <br>
+    <button class="btn" style="background:#78909C;" onclick="showScreen('menu-screen')">返回選單</button>
+  </div>
+
+  <!-- 3. 通關結算/紀錄名字 -->
+  <div id="game-over-screen" class="hidden">
+    <div class="hero-avatar" id="win-leo-svg"></div>
+    <h2>🎉 任務完成！超級特工！</h2>
+    <p style="font-size: 18px; margin: 10px 0;">得分：<span id="final-score" style="color:var(--danger); font-weight:bold; font-size:24px;">0</span> 分</p>
+    <div style="background:#FFE082; padding:10px; border-radius:10px; font-weight:bold; color:#D84315; margin:10px 0;">
+      「自己的事，自己做！」
+    </div>
+    <input type="text" id="player-name" placeholder="請輸入特工名字" maxlength="10" style="padding:10px; font-size:16px; border-radius:8px; border:2px solid #ccc; width:80%; max-width:250px; text-align:center;"><br>
+    <button class="btn btn-submit" onclick="saveScore()">儲存紀錄並看排行榜 🏆</button>
+  </div>
+
+  <!-- 4. 排行榜 -->
+  <div id="leaderboard-screen" class="hidden">
+    <h2>🏆 責任特工榮譽榜 (Top 10)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>排名</th>
+          <th>特工名字</th>
+          <th>得分</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard-tbody"></tbody>
+    </table>
+    <br>
+    <button class="btn" onclick="showScreen('menu-screen')">返回主選單</button>
+  </div>
+</div>
+
+<script>
+  // 🎨 純 SVG 向量圖庫數據 (Pure Vector Assets)
+  const SVG_LIB = {
+    leoHappy: `<svg viewBox="0 0 120 120"><circle cx="60" cy="65" r="45" fill="#81C784"/><path d="M45 25 Q30 5 25 15 Q35 25 45 35" fill="#81C784" stroke="#388E3C" stroke-width="3"/><circle cx="23" cy="13" r="6" fill="#AED581"/><path d="M75 25 Q90 5 95 15 Q85 25 75 35" fill="#81C784" stroke="#388E3C" stroke-width="3"/><circle cx="97" cy="13" r="6" fill="#AED581"/><circle cx="45" cy="55" r="10" fill="white"/><circle cx="45" cy="55" r="5" fill="#2E7D32"/><circle cx="75" cy="55" r="10" fill="white"/><circle cx="75" cy="55" r="5" fill="#2E7D32"/><path d="M40 80 Q60 100 80 80" fill="none" stroke="#1B5E20" stroke-width="4" stroke-linecap="round"/><path d="M50 100 L70 100 L60 115 Z" fill="#F44336"/><polygon points="60,95 50,105 70,105" fill="#FFD54F"/></svg>`,
+    
+    leoSad: `<svg viewBox="0 0 120 120"><circle cx="60" cy="65" r="45" fill="#81C784"/><path d="M45 25 Q30 5 25 15 Q35 25 45 35" fill="#81C784" stroke="#388E3C" stroke-width="3"/><circle cx="23" cy="13" r="6" fill="#81C784"/><path d="M75 25 Q90 5 95 15 Q85 25 75 35" fill="#81C784" stroke="#388E3C" stroke-width="3"/><circle cx="97" cy="13" r="6" fill="#81C784"/><circle cx="45" cy="55" r="10" fill="white"/><circle cx="45" cy="57" r="5" fill="#2E7D32"/><circle cx="75" cy="55" r="10" fill="white"/><circle cx="75" cy="57" r="5" fill="#2E7D32"/><path d="M45 85 Q60 70 75 85" fill="none" stroke="#1B5E20" stroke-width="4" stroke-linecap="round"/><path d="M35 42 Q45 48 50 45" fill="none" stroke="#1B5E20" stroke-width="3"/><path d="M85 42 Q75 48 70 45" fill="none" stroke="#1B5E20" stroke-width="3"/></svg>`,
+
+    book: `<svg viewBox="0 0 80 80"><rect x="15" y="10" width="50" height="60" rx="5" fill="#3F51B5"/><rect x="20" y="15" width="40" height="50" rx="2" fill="#E8EAF6"/><text x="40" y="42" font-size="12" font-weight="bold" fill="#1A237E" text-anchor="middle">人文</text><circle cx="40" cy="52" r="4" fill="#FFC107"/></svg>`,
+    
+    stationery: `<svg viewBox="0 0 80 80"><rect x="15" y="25" width="45" height="10" transform="rotate(-30 20 25)" fill="#FFD54F"/><polygon points="50,5 60,10 52,20" fill="#FF7043"/><rect x="15" y="55" width="30" height="15" rx="3" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="2"/></svg>`,
+    
+    paper: `<svg viewBox="0 0 80 80"><path d="M20 30 L40 15 L65 25 L70 50 L50 70 L25 60 L10 45 Z" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="3"/><path d="M20 30 L45 45 L65 25 M45 45 L50 70 M45 45 L10 45" fill="none" stroke="#90A4AE" stroke-width="2"/></svg>`,
+    
+    candy: `<svg viewBox="0 0 80 80"><polygon points="10,25 25,40 10,55" fill="#FF5722"/><polygon points="70,25 55,40 70,55" fill="#FF5722"/><circle cx="40" cy="40" r="18" fill="#FFC107"/><path d="M30 32 Q40 22 50 32" fill="none" stroke="#FFF" stroke-width="3"/></svg>`,
+    
+    robot: `<svg viewBox="0 0 80 80"><rect x="25" y="15" width="30" height="25" rx="3" fill="#B0BEC5" stroke="#37474F" stroke-width="2"/><circle cx="33" cy="25" r="4" fill="#FF5722"/><circle cx="47" cy="25" r="4" fill="#FF5722"/><rect x="33" y="32" width="14" height="4" fill="#37474F"/><rect x="20" y="42" width="40" height="30" rx="4" fill="#78909C" stroke="#37474F" stroke-width="2"/><circle cx="40" cy="57" r="6" fill="#FFD54F"/></svg>`,
+    
+    car: `<svg viewBox="0 0 80 80"><path d="M15 45 Q25 25 45 25 Q60 25 70 45 Z" fill="#E53935"/><rect x="10" y="42" width="60" height="15" rx="4" fill="#D32F2F"/><circle cx="25" cy="58" r="8" fill="#37474F"/><circle cx="25" cy="58" r="3" fill="#FFF"/><circle cx="55" cy="58" r="8" fill="#37474F"/><circle cx="55" cy="58" r="3" fill="#FFF"/></svg>`,
+
+    bag: `<svg viewBox="0 0 80 80"><rect x="20" y="20" width="40" height="50" rx="8" fill="#1E88E5"/><rect x="28" y="35" width="24" height="28" rx="4" fill="#42A5F5"/><path d="M30 20 C30 10, 50 10, 50 20" fill="none" stroke="#1565C0" stroke-width="4"/><circle cx="40" cy="48" r="4" fill="#FFC107"/></svg>`,
+    
+    trash: `<svg viewBox="0 0 80 80"><rect x="22" y="25" width="36" height="45" rx="3" fill="#78909C"/><rect x="18" y="18" width="44" height="7" rx="2" fill="#455A64"/><line x1="30" y1="33" x2="30" y2="60" stroke="#CFD8DC" stroke-width="3"/><line x1="40" y1="33" x2="40" y2="60" stroke="#CFD8DC" stroke-width="3"/><line x1="50" y1="33" x2="50" y2="60" stroke="#CFD8DC" stroke-width="3"/></svg>`,
+    
+    home: `<svg viewBox="0 0 80 80"><rect x="15" y="30" width="50" height="38" rx="4" fill="#8D6E63"/><polygon points="10,32 40,12 70,32" fill="#5D4037"/><rect x="32" y="45" width="16" height="23" fill="#D7CCC8"/></svg>`
+  };
+
+  // 🎮 遊戲關卡資料庫
+  const LEVELS_DATA = [
+    {
+      title: "第一關：個人座位整理",
+      prompt: "咕嚕：「這些物品該放在哪裡呢？請幫幫我！」",
+      timer: null,
+      mode: "sorting",
+      leoSvg: SVG_LIB.leoSad,
+      items: [
+        { id: "book", name: "人文科書", svg: SVG_LIB.book, type: "bag" },
+        { id: "stationery", name: "文具", svg: SVG_LIB.stationery, type: "bag" },
+        { id: "paper", name: "廢紙團", svg: SVG_LIB.paper, type: "trash" },
+        { id: "candy", name: "糖果紙", svg: SVG_LIB.candy, type: "trash" },
+        { id: "robot", name: "機械人", svg: SVG_LIB.robot, type: "home" },
+        { id: "car", name: "玩具車", svg: SVG_LIB.car, type: "home" }
+      ]
+    },
+    {
+      title: "第二關：閃電 30 秒大挑戰",
+      prompt: "咕嚕：「限時 30 秒倒數！快清理混亂桌面！」",
+      timer: 30,
+      mode: "sorting",
+      leoSvg: SVG_LIB.leoHappy,
+      items: [
+        { id: "book", name: "人文科書", svg: SVG_LIB.book, type: "bag" },
+        { id: "paper", name: "廢紙團", svg: SVG_LIB.paper, type: "trash" },
+        { id: "candy", name: "糖果紙", svg: SVG_LIB.candy, type: "trash" },
+        { id: "robot", name: "機械人", svg: SVG_LIB.robot, type: "home" }
+      ]
+    },
+    {
+      title: "第三關：五星特工大判斷",
+      prompt: "咕嚕：「這種行為有沒有責任感呢？」",
+      timer: null,
+      mode: "choice",
+      leoSvg: SVG_LIB.leoHappy,
+      items: [
+        { id: "c1", name: "明仔讓媽媽幫忙收拾書包，自己睇電視。", answer: "cross" },
+        { id: "c2", name: "小花看到座位下有廢紙，主動撿起丟垃圾桶。", answer: "circle" },
+        { id: "c3", name: "看到隔壁同學掉擦膠，主動提醒或幫忙撿起。", answer: "circle" }
+      ]
+    }
+  ];
+
+  // 🔊 音效產生器 (Web Audio API)
+  let audioCtx = null;
+  function playSound(type) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      
+      if (type === 'correct') {
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+      } else if (type === 'wrong') {
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(174.61, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+      }
+    } catch(e){
+        console.error("Audio playback failed:", e);
+    }
+  }
+
+  // 🎯 遊戲狀態管理
+  let currentLvlIdx = 0;
+  let score = 0;
+  let remainingItems = [];
+  let selectedItem = null; // Used for click-to-select
+  let draggedItemId = null; // Used for drag-and-drop
+  let timerId = null;
+  let timeLeft = 0;
+
+  // 初始化 DOM 畫面及向量圖
+  window.onload = () => {
+    document.getElementById('menu-leo-svg').innerHTML = SVG_LIB.leoHappy;
+    document.getElementById('win-leo-svg').innerHTML = SVG_LIB.leoHappy;
+    document.getElementById('target-bag-svg').innerHTML = SVG_LIB.bag;
+    document.getElementById('target-trash-svg').innerHTML = SVG_LIB.trash;
+    document.getElementById('target-home-svg').innerHTML = SVG_LIB.home;
+  };
+
+  function showScreen(screenId) {
+    ['menu-screen', 'game-screen', 'game-over-screen', 'leaderboard-screen'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById(screenId).classList.remove('hidden');
+  }
+
+  function startLevel(idx) {
+    currentLvlIdx = idx;
+    if (idx === 0) score = 0;
+    
+    showScreen('game-screen');
+    const lvl = LEVELS_DATA[idx];
+    
+    document.getElementById('current-level-txt').innerText = `${idx + 1}/3`;
+    document.getElementById('score-txt').innerText = score;
+    document.getElementById('game-leo-svg').innerHTML = lvl.leoSvg;
+    document.getElementById('level-prompt').innerText = lvl.prompt;
+
+    remainingItems = [...lvl.items];
+    selectedItem = null;
+    draggedItemId = null;
+    document.getElementById('items-pool').innerHTML = '';
+
+    // 計時器
+    clearInterval(timerId);
+    const timerBox = document.getElementById('timer-box');
+    if (lvl.timer) {
+      timeLeft = lvl.timer;
+      timerBox.classList.remove('hidden');
+      document.getElementById('timer-txt').innerText = timeLeft;
+      timerId = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer-txt').innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          alert('⏱️ 時間到！重新挑戰這關！');
+          startLevel(idx);
+        }
+      }, 1000);
+    } else {
+      timerBox.classList.add('hidden');
+    }
+
+    // 關卡模式渲染
+    const targets = document.getElementById('targets-container');
+    const choice = document.getElementById('choice-container');
+
+    if (lvl.mode === 'sorting') {
+      targets.classList.remove('hidden');
+      choice.classList.add('hidden');
+      remainingItems.forEach(item => {
+        document.getElementById('items-pool').appendChild(createItemCard(item));
+      });
+    } else {
+      targets.classList.add('hidden');
+      choice.classList.remove('hidden');
+      renderChoiceQuestion();
+    }
+  }
+
+  function createItemCard(item) {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.id = `card-${item.id}`;
+    card.draggable = true; // Enable dragging
+    card.innerHTML = `${item.svg}<div class="item-name">${item.name}</div>`;
+    
+    // Click selection logic
+    card.onclick = () => {
+      document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedItem = item;
+    };
+
+    // Drag start event
+    card.ondragstart = (e) => {
+        draggedItemId = item.id;
+        // Required for Firefox
+        e.dataTransfer.setData('text/plain', item.id);
+        
+        // Also select it visually
+        document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedItem = item;
+    };
+
+    return card;
+  }
+  
+  // Prevent default behavior to allow dropping
+  function allowDrop(e) {
+      e.preventDefault();
+  }
+
+  // Handle drop event
+  function handleDrop(e, targetType) {
+      e.preventDefault();
+      
+      // Try to get item from drag event data first (most reliable)
+      let itemId = e.dataTransfer.getData('text/plain');
+      
+      // Fallback if dataTransfer is empty
+      if (!itemId && draggedItemId) {
+          itemId = draggedItemId;
+      }
+
+      if (itemId) {
+          const item = remainingItems.find(i => i.id === itemId);
+          if (item) {
+               // Update selectedItem to the dragged item for processAnswer
+              selectedItem = item;
+              processAnswer(targetType);
+          }
+      }
+      
+      draggedItemId = null; // Reset
+  }
+
+  // Handle click on target box
+  function handleTargetClick(targetType) {
+    if (!selectedItem) {
+      alert('請先點選上面的物品！');
+      return;
+    }
+    processAnswer(targetType);
+  }
+  
+  // Shared logic for both click and drop
+  function processAnswer(targetType) {
+      if (selectedItem.type === targetType) {
+      playSound('correct');
+      score += 10;
+      document.getElementById('score-txt').innerText = score;
+      
+      const cardToRemove = document.getElementById(`card-${selectedItem.id}`);
+      if(cardToRemove) {
+          cardToRemove.remove();
+      }
+      
+      remainingItems = remainingItems.filter(i => i.id !== selectedItem.id);
+      selectedItem = null;
+
+      if (remainingItems.length === 0) checkLevelComplete();
+    } else {
+      playSound('wrong');
+      alert('❌ 不太對喔，再想想看！');
+    }
+  }
+
+  function renderChoiceQuestion() {
+    if (!remainingItems.length) return;
+    const item = remainingItems[0];
+    document.getElementById('items-pool').innerHTML = `
+      <div class="item-card" style="width:90%; max-width:400px; padding:15px; font-size:16px; cursor:default;">
+        ${SVG_LIB.leoHappy}
+        <div style="margin-top:10px; font-weight:bold;">${item.name}</div>
+      </div>
+    `;
+  }
+
+  function handleChoiceClick(userChoice) {
+    const item = remainingItems[0];
+    if (item.answer === userChoice) {
+      playSound('correct');
+      score += 20;
+      document.getElementById('score-txt').innerText = score;
+      remainingItems.shift();
+      
+      if (remainingItems.length === 0) checkLevelComplete();
+      else renderChoiceQuestion();
+    } else {
+      playSound('wrong');
+      alert('❌ 答案不正確，再思考一下！');
+    }
+  }
+
+  function checkLevelComplete() {
+    clearInterval(timerId);
+    setTimeout(() => {
+      currentLvlIdx++;
+      if (currentLvlIdx < LEVELS_DATA.length) {
+        alert('🎉 恭喜通關！進入下一關考驗！');
+        startLevel(currentLvlIdx);
+      } else {
+        document.getElementById('final-score').innerText = score;
+        showScreen('game-over-screen');
+      }
+    }, 300);
+  }
+
+  function saveScore() {
+    const name = document.getElementById('player-name').value.trim() || '責任特工';
+    const records = JSON.parse(localStorage.getItem('agent_leaderboard') || '[]');
+    records.push({ name, score });
+    records.sort((a, b) => b.score - a.score);
+    localStorage.setItem('agent_leaderboard', JSON.stringify(records.slice(0, 10)));
+    showLeaderboard();
+  }
+
+  function showLeaderboard() {
+    showScreen('leaderboard-screen');
+    const records = JSON.parse(localStorage.getItem('agent_leaderboard') || '[]');
+    const tbody = document.getElementById('leaderboard-tbody');
+    tbody.innerHTML = '';
+    if (!records.length) {
+      tbody.innerHTML = '<tr><td colspan="3">暫無紀錄，快成為第一個特工！</td></tr>';
+      return;
+    }
+    records.forEach((r, idx) => {
+      tbody.innerHTML += `<tr><td>${idx + 1}</td><td><b>${r.name}</b></td><td style="color:var(--secondary); font-weight:bold;">${r.score}</td></tr>`;
+    });
+  }
+</script>
 </body>
 </html>
