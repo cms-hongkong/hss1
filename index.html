@@ -48,22 +48,26 @@
       margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
-    /* 角色與對話框 */
     .hero-avatar { width: 130px; height: 130px; margin: 5px auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
     .speech-bubble {
       background: white; padding: 15px 20px; border-radius: 15px; font-size: 16px; color: var(--text);
-      margin: 10px auto 20px; max-width: 480px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-      border-left: 5px solid var(--primary); text-align: left; line-height: 1.5;
+      margin: 10px auto 20px; max-width: 550px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      border-left: 5px solid var(--primary); text-align: left; line-height: 1.6;
+    }
+    
+    /* 專屬第二關提示重點字樣 */
+    .highlight-text {
+      font-size: 26px; font-weight: 900; color: #D32F2F; background: #FFCDD2; 
+      padding: 2px 10px; border-radius: 8px; display: inline-block; margin: 5px 0;
     }
 
-    /* 圖卡風格 (參考 image_8) */
     .items-pool {
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
       padding: 15px; border-radius: 15px; margin-bottom: 20px;
     }
 
     .item-card {
-      background: white; padding: 12px; border-radius: 16px; cursor: grab; user-select: none;
+      background: white; padding: 10px; border-radius: 16px; cursor: grab; user-select: none;
       box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column;
       align-items: center; width: 105px; border: 2px solid transparent; transition: all 0.2s;
     }
@@ -72,7 +76,6 @@
     .item-card svg { width: 65px; height: 65px; pointer-events: none; margin-bottom: 8px; }
     .item-name { font-size: 14px; font-weight: bold; color: #455A64; pointer-events: none; }
 
-    /* 答錯震動動畫 */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-6px); border-color: #F44336; }
@@ -81,20 +84,18 @@
     }
     .shake { animation: shake 0.4s ease-in-out; }
 
-    /* 分類目標 */
     .targets-container { display: flex; justify-content: space-around; gap: 15px; width: 100%; margin-bottom: 10px; }
     .target-box {
       flex: 1; background: white; border: 3px dashed #A5D6A7; border-radius: 16px;
       padding: 15px 5px; cursor: pointer; transition: background-color 0.2s;
     }
     .target-box:hover { background: #E8F5E9; border-color: var(--primary); transform: scale(1.02); }
-    .target-box svg { width: 55px; height: 55px; pointer-events: none; }
+    .target-box svg { width: 65px; height: 65px; pointer-events: none; }
     .target-box h3 { font-size: 16px; color: var(--primary-dark); margin-top: 8px; pointer-events: none;}
 
     .choice-container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
     .hidden { display: none !important; }
 
-    /* 排行榜 */
     table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; overflow: hidden;}
     th, td { padding: 12px; border-bottom: 1px solid #E2E8F0; text-align: center; }
     th { background-color: var(--primary-dark); color: white; }
@@ -107,7 +108,7 @@
 </header>
 
 <div class="container">
-  <!-- 1. 主選單 -->
+  <!-- 主選單 -->
   <div id="menu-screen">
     <div class="hero-avatar" id="menu-leo-svg"></div>
     <div class="speech-bubble">
@@ -117,12 +118,11 @@
     <button class="btn btn-gold" onclick="showLeaderboard()">🏆 查看榮譽榜</button>
   </div>
 
-  <!-- 2. 遊戲主畫面 -->
+  <!-- 遊戲主畫面 -->
   <div id="game-screen" class="hidden">
     <div class="stats-bar">
       <div>關卡: <span id="current-level-txt">1/3</span></div>
       <div>積分: <span id="score-txt" style="color:var(--secondary);">0</span></div>
-      <div id="timer-box" class="hidden" style="color:var(--danger)">⏱️ <span id="timer-txt">30</span>s</div>
     </div>
 
     <div style="display:flex; align-items:center; justify-content:center; gap:15px; margin-bottom:10px;">
@@ -156,7 +156,7 @@
     </div>
   </div>
 
-  <!-- 3. 通關結算 -->
+  <!-- 通關結算 -->
   <div id="game-over-screen" class="hidden">
     <div class="hero-avatar" id="win-leo-svg"></div>
     <h2 style="color:var(--primary-dark);">🎉 任務完成！超級特工！</h2>
@@ -168,7 +168,7 @@
     <button class="btn btn-submit" style="margin-top:15px;" onclick="saveScore()">儲存紀錄並看排行榜 🏆</button>
   </div>
 
-  <!-- 4. 排行榜 -->
+  <!-- 排行榜 -->
   <div id="leaderboard-screen" class="hidden">
     <h2 style="color:var(--primary-dark);">🏆 責任特工榮譽榜 (Top 10)</h2>
     <table>
@@ -182,35 +182,38 @@
 </div>
 
 <script>
-  // 🎨 純 SVG 向量圖庫 
+  // 🎨 純 SVG 向量圖庫
   const SVG_LIB = {
     leoHappy: `<svg viewBox="0 0 120 120"><circle cx="60" cy="65" r="45" fill="#81C784"/><path d="M45 25 Q30 5 25 15 Q35 25 45 35" fill="#81C784" stroke="#388E3C" stroke-width="3"/><circle cx="23" cy="13" r="6" fill="#AED581"/><path d="M75 25 Q90 5 95 15 Q85 25 75 35" fill="#81C784" stroke="#388E3C" stroke-width="3"/><circle cx="97" cy="13" r="6" fill="#AED581"/><circle cx="45" cy="55" r="10" fill="white"/><circle cx="45" cy="55" r="5" fill="#2E7D32"/><circle cx="75" cy="55" r="10" fill="white"/><circle cx="75" cy="55" r="5" fill="#2E7D32"/><path d="M40 80 Q60 100 80 80" fill="none" stroke="#1B5E20" stroke-width="4" stroke-linecap="round"/><path d="M50 100 L70 100 L60 115 Z" fill="#F44336"/><polygon points="60,95 50,105 70,105" fill="#FFD54F"/></svg>`,
     leoSad: `<svg viewBox="0 0 120 120"><circle cx="60" cy="65" r="45" fill="#81C784"/><path d="M45 25 Q30 5 25 15 Q35 25 45 35" fill="#81C784" stroke="#388E3C" stroke-width="3"/><circle cx="23" cy="13" r="6" fill="#81C784"/><path d="M75 25 Q90 5 95 15 Q85 25 75 35" fill="#81C784" stroke="#388E3C" stroke-width="3"/><circle cx="97" cy="13" r="6" fill="#81C784"/><circle cx="45" cy="55" r="10" fill="white"/><circle cx="45" cy="57" r="5" fill="#2E7D32"/><circle cx="75" cy="55" r="10" fill="white"/><circle cx="75" cy="57" r="5" fill="#2E7D32"/><path d="M45 85 Q60 70 75 85" fill="none" stroke="#1B5E20" stroke-width="4" stroke-linecap="round"/><path d="M35 42 Q45 48 50 45" fill="none" stroke="#1B5E20" stroke-width="3"/><path d="M85 42 Q75 48 70 45" fill="none" stroke="#1B5E20" stroke-width="3"/></svg>`,
 
-    /* 修改：人文科書與音樂書 */
+    /* 物品圖卡 */
     book: `<svg viewBox="0 0 80 80"><rect x="15" y="10" width="50" height="60" rx="5" fill="#3F51B5"/><rect x="20" y="15" width="40" height="50" rx="2" fill="#E8EAF6"/><text x="40" y="42" font-size="14" font-weight="bold" fill="#1A237E" text-anchor="middle">人文</text><circle cx="40" cy="54" r="4" fill="#FFC107"/></svg>`,
     music_book: `<svg viewBox="0 0 80 80"><rect x="15" y="10" width="50" height="60" rx="5" fill="#E91E63"/><rect x="20" y="15" width="40" height="50" rx="2" fill="#FCE4EC"/><text x="40" y="40" font-size="14" font-weight="bold" fill="#880E4F" text-anchor="middle">音樂</text><path d="M35 55 L35 46 L45 44 L45 53 M35 46 L45 44" fill="none" stroke="#880E4F" stroke-width="2"/><circle cx="33" cy="55" r="2.5" fill="#880E4F"/><circle cx="43" cy="53" r="2.5" fill="#880E4F"/></svg>`,
-    
-    /* 修改：文具加入間尺 */
     stationery: `<svg viewBox="0 0 80 80"><rect x="10" y="50" width="60" height="16" fill="#B3E5FC" stroke="#4FC3F7" stroke-width="2"/><line x1="20" y1="50" x2="20" y2="56" stroke="#0288D1" stroke-width="2"/><line x1="30" y1="50" x2="30" y2="56" stroke="#0288D1" stroke-width="2"/><line x1="40" y1="50" x2="40" y2="60" stroke="#0288D1" stroke-width="2"/><line x1="50" y1="50" x2="50" y2="56" stroke="#0288D1" stroke-width="2"/><line x1="60" y1="50" x2="60" y2="56" stroke="#0288D1" stroke-width="2"/><rect x="15" y="25" width="45" height="10" rx="2" fill="#FFD54F"/><polygon points="60,25 72,30 60,35" fill="#FFAB91"/><polygon points="68,28 72,30 68,32" fill="#424242"/><rect x="15" y="10" width="22" height="12" rx="2" fill="#EEEEEE" stroke="#BDBDBD" stroke-width="2"/></svg>`,
     
-    /* 修改：被壓扁的垃圾糖果紙 */
-    candy_trash: `<svg viewBox="0 0 80 80"><path d="M 25 35 Q 35 20 45 30 T 55 35 Q 60 50 45 50 T 25 55 Z" fill="#FFE082" stroke="#F57F17" stroke-width="2"/><path d="M 30 35 L 45 45 M 35 50 L 50 35 M 40 25 L 40 40" stroke="#F57F17" stroke-width="2"/><polygon points="25,40 10,30 15,50" fill="#FFCC80" stroke="#F57F17" stroke-width="1"/><polygon points="55,40 70,30 65,50" fill="#FFCC80" stroke="#F57F17" stroke-width="1"/></svg>`,
-    paper: `<svg viewBox="0 0 80 80"><path d="M20 30 L35 15 L60 25 L70 50 L50 70 L25 60 L10 45 Z" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="3"/><path d="M20 30 L45 45 L60 25 M45 45 L50 70 M45 45 L10 45" fill="none" stroke="#90A4AE" stroke-width="2"/></svg>`,
-    
-    /* 修改：玩具類加入毛公仔 */
+    plush_toy: `<svg viewBox="0 0 80 80"><circle cx="25" cy="25" r="10" fill="#A1887F"/><circle cx="55" cy="25" r="10" fill="#A1887F"/><circle cx="40" cy="45" r="22" fill="#8D6E63"/><circle cx="33" cy="40" r="3" fill="#3E2723"/><circle cx="47" cy="40" r="3" fill="#3E2723"/><ellipse cx="40" cy="52" rx="9" ry="6" fill="#D7CCC8"/><circle cx="40" cy="50" r="2" fill="#3E2723"/><path d="M36 54 Q40 58 44 54" fill="none" stroke="#3E2723" stroke-width="2"/></svg>`,
     robot: `<svg viewBox="0 0 80 80"><rect x="25" y="12" width="30" height="25" rx="4" fill="#78909C"/><circle cx="33" cy="22" r="4" fill="#FF5252"/><circle cx="47" cy="22" r="4" fill="#FF5252"/><rect x="33" y="30" width="14" height="4" fill="#37474F"/><rect x="20" y="40" width="40" height="30" rx="5" fill="#546E7A"/><circle cx="40" cy="55" r="7" fill="#FFCA28"/></svg>`,
     car: `<svg viewBox="0 0 80 80"><path d="M15 45 Q25 25 45 25 Q60 25 70 45 Z" fill="#E53935"/><rect x="10" y="42" width="60" height="16" rx="5" fill="#D32F2F"/><circle cx="25" cy="58" r="8" fill="#263238"/><circle cx="25" cy="58" r="3" fill="#FFF"/><circle cx="55" cy="58" r="8" fill="#263238"/><circle cx="55" cy="58" r="3" fill="#FFF"/></svg>`,
-    plush_toy: `<svg viewBox="0 0 80 80"><circle cx="25" cy="25" r="10" fill="#A1887F"/><circle cx="55" cy="25" r="10" fill="#A1887F"/><circle cx="40" cy="45" r="22" fill="#8D6E63"/><circle cx="33" cy="40" r="3" fill="#3E2723"/><circle cx="47" cy="40" r="3" fill="#3E2723"/><ellipse cx="40" cy="52" rx="9" ry="6" fill="#D7CCC8"/><circle cx="40" cy="50" r="2" fill="#3E2723"/><path d="M36 54 Q40 58 44 54" fill="none" stroke="#3E2723" stroke-width="2"/></svg>`,
+    
+    paper: `<svg viewBox="0 0 80 80"><path d="M20 30 L35 15 L60 25 L70 50 L50 70 L25 60 L10 45 Z" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="3"/><path d="M20 30 L45 45 L60 25 M45 45 L50 70 M45 45 L10 45" fill="none" stroke="#90A4AE" stroke-width="2"/></svg>`,
+    candy_trash: `<svg viewBox="0 0 80 80"><path d="M 25 35 Q 35 20 45 30 T 55 35 Q 60 50 45 50 T 25 55 Z" fill="#FFE082" stroke="#F57F17" stroke-width="2"/><path d="M 30 35 L 45 45 M 35 50 L 50 35 M 40 25 L 40 40" stroke="#F57F17" stroke-width="2"/><polygon points="25,40 10,30 15,50" fill="#FFCC80" stroke="#F57F17" stroke-width="1"/><polygon points="55,40 70,30 65,50" fill="#FFCC80" stroke="#F57F17" stroke-width="1"/></svg>`,
+    banana_peel: `<svg viewBox="0 0 80 80"><path d="M35,60 C20,40 25,20 25,20 C35,35 40,45 40,55" fill="#FFEB3B" stroke="#F9A825" stroke-width="2"/><path d="M45,60 C60,40 55,20 55,20 C45,35 40,45 40,55" fill="#FFEB3B" stroke="#F9A825" stroke-width="2"/><path d="M40,65 C40,40 35,25 40,25 C45,25 40,40 40,65" fill="#FFEE58" stroke="#F9A825" stroke-width="2"/><circle cx="40" cy="65" r="4" fill="#5D4037"/></svg>`,
+    
+    /* 第二關專屬新增物品 */
+    pe_uniform: `<svg viewBox="0 0 80 80"><path d="M20,25 L30,20 L50,20 L60,25 L68,40 L55,45 L50,32 L50,70 L30,70 L30,32 L25,45 L12,40 Z" fill="#FFF" stroke="#1E88E5" stroke-width="3"/><path d="M30,20 Q40,30 50,20" fill="none" stroke="#1E88E5" stroke-width="3"/><rect x="35" y="35" width="10" height="15" fill="#FFCA28"/></svg>`,
+    school_uniform: `<svg viewBox="0 0 80 80"><path d="M20,25 L30,20 L50,20 L60,25 L68,40 L55,45 L50,32 L50,70 L30,70 L30,32 L25,45 L12,40 Z" fill="#FAFAFA" stroke="#9E9E9E" stroke-width="2"/><polygon points="30,20 40,35 35,20" fill="#EEEEEE" stroke="#9E9E9E" stroke-width="1"/><polygon points="50,20 40,35 45,20" fill="#EEEEEE" stroke="#9E9E9E" stroke-width="1"/><polygon points="38,32 42,32 45,55 40,60 35,55" fill="#D32F2F"/><line x1="40" y1="35" x2="40" y2="70" stroke="#E0E0E0" stroke-width="2"/></svg>`,
+    beyblade: `<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="28" fill="#CFD8DC" stroke="#455A64" stroke-width="2"/><circle cx="40" cy="40" r="20" fill="#1E88E5" stroke="#0D47A1" stroke-width="2"/><circle cx="40" cy="40" r="8" fill="#FFC107" stroke="#F57F17" stroke-width="2"/><polygon points="40,8 45,15 35,15" fill="#D32F2F"/><polygon points="40,72 45,65 35,65" fill="#D32F2F"/><polygon points="8,40 15,35 15,45" fill="#D32F2F"/><polygon points="72,40 65,35 65,45" fill="#D32F2F"/><circle cx="40" cy="25" r="2" fill="#FFF"/><circle cx="40" cy="55" r="2" fill="#FFF"/><circle cx="25" cy="40" r="2" fill="#FFF"/><circle cx="55" cy="40" r="2" fill="#FFF"/></svg>`,
 
+    /* 分類目標箱子 */
     bag: `<svg viewBox="0 0 80 80"><rect x="20" y="20" width="40" height="50" rx="8" fill="#42A5F5"/><rect x="28" y="35" width="24" height="28" rx="4" fill="#1E88E5"/><path d="M30 20 C30 10, 50 10, 50 20" fill="none" stroke="#1565C0" stroke-width="4"/><circle cx="40" cy="48" r="4" fill="#FFCA28"/></svg>`,
     trash: `<svg viewBox="0 0 80 80"><rect x="24" y="25" width="32" height="45" rx="3" fill="#90A4AE"/><rect x="20" y="18" width="40" height="7" rx="3" fill="#607D8B"/><line x1="32" y1="33" x2="32" y2="60" stroke="#CFD8DC" stroke-width="3"/><line x1="40" y1="33" x2="40" y2="60" stroke="#CFD8DC" stroke-width="3"/><line x1="48" y1="33" x2="48" y2="60" stroke="#CFD8DC" stroke-width="3"/></svg>`,
     home: `<svg viewBox="0 0 80 80"><rect x="18" y="35" width="44" height="35" fill="#8D6E63"/><polygon points="10,35 40,12 70,35" fill="#5D4037"/><rect x="35" y="48" width="10" height="22" fill="#D7CCC8"/></svg>`,
 
     /* 關卡 3 專屬情境圖 */
-    scene_cross: `<svg viewBox="0 0 160 100"><rect x="10" y="20" width="50" height="40" rx="4" fill="#37474F"/><rect x="14" y="24" width="42" height="32" fill="#81D4FA"/><circle cx="35" cy="75" r="14" fill="#FFCCBC"/><text x="18" y="45" font-size="10">📺</text><circle cx="120" cy="40" r="15" fill="#FFCCBC"/><rect x="100" y="65" width="25" height="30" rx="4" fill="#1E88E5"/><path d="M110 52 L105 70" stroke="#455A64" stroke-width="4"/></svg>`,
-    scene_circle1: `<svg viewBox="0 0 160 100"><rect x="100" y="40" width="35" height="50" fill="#78909C"/><path d="M30 80 Q60 30 85 35" fill="none" stroke="#FFCCBC" stroke-width="8" stroke-linecap="round"/><path d="M100 40 L135 40" stroke="#455A64" stroke-width="5"/><circle cx="95" cy="35" r="10" fill="#ECEFF1"/><path d="M90 30 L100 40" stroke="#B0BEC5" stroke-width="2"/></svg>`,
-    scene_circle2: `<svg viewBox="0 0 160 100"><path d="M20 80 Q50 40 70 50" fill="none" stroke="#FFCCBC" stroke-width="8" stroke-linecap="round"/><path d="M140 80 Q110 40 90 50" fill="none" stroke="#FFAB91" stroke-width="8" stroke-linecap="round"/><rect x="75" y="45" width="16" height="10" fill="#E0E0E0" stroke="#9E9E9E" stroke-width="1"/></svg>`
+    scene_q1: `<svg viewBox="0 0 160 100"><rect x="15" y="25" width="60" height="45" rx="5" fill="#37474F"/><rect x="20" y="30" width="50" height="35" fill="#81D4FA"/><text x="32" y="55" font-size="20">📺</text><rect x="95" y="35" width="40" height="45" rx="8" fill="#1E88E5"/><rect x="105" y="45" width="20" height="25" rx="4" fill="#42A5F5"/><path d="M105 35 C105 20, 125 20, 125 35" fill="none" stroke="#0D47A1" stroke-width="4"/><circle cx="115" cy="55" r="3" fill="#FFCA28"/></svg>`,
+    scene_q2: `<svg viewBox="0 0 160 100"><path d="M20 40 L35 25 L60 35 L70 60 L50 80 L25 70 Z" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="3"/><path d="M20 40 L45 55 L60 35 M45 55 L50 80 M45 55 L10 55" fill="none" stroke="#90A4AE" stroke-width="2"/><rect x="95" y="25" width="35" height="50" rx="3" fill="#90A4AE"/><rect x="90" y="18" width="45" height="7" rx="3" fill="#607D8B"/><line x1="105" y1="35" x2="105" y2="65" stroke="#CFD8DC" stroke-width="3"/><line x1="112" y1="35" x2="112" y2="65" stroke="#CFD8DC" stroke-width="3"/><line x1="120" y1="35" x2="120" y2="65" stroke="#CFD8DC" stroke-width="3"/></svg>`,
+    scene_q3: `<svg viewBox="0 0 160 100"><rect x="30" y="65" width="100" height="15" fill="#B3E5FC" stroke="#4FC3F7" stroke-width="2"/><line x1="50" y1="65" x2="50" y2="72" stroke="#0288D1" stroke-width="2"/><line x1="70" y1="65" x2="70" y2="72" stroke="#0288D1" stroke-width="2"/><line x1="90" y1="65" x2="90" y2="72" stroke="#0288D1" stroke-width="2"/><line x1="110" y1="65" x2="110" y2="72" stroke="#0288D1" stroke-width="2"/><rect x="40" y="30" width="70" height="15" rx="3" transform="rotate(-10 75 35)" fill="#FFD54F"/><polygon points="108,13 125,18 115,31" fill="#FFAB91"/><polygon points="120,16 125,18 122,23" fill="#424242"/><rect x="30" y="30" width="35" height="20" rx="3" fill="#EEEEEE" stroke="#BDBDBD" stroke-width="2"/></svg>`
   };
 
   // 🎮 遊戲關卡資料庫
@@ -218,43 +221,43 @@
     {
       title: "第一關：物品大分類",
       prompt: "咕嚕：「這裡有好多東西，請幫我將它們放進正確的容器中！」",
-      timer: null,
       mode: "sorting",
       leoSvg: SVG_LIB.leoSad,
       items: [
         { id: "book", name: "人文書", svg: SVG_LIB.book, type: "bag" },
         { id: "music", name: "音樂書", svg: SVG_LIB.music_book, type: "bag" },
-        { id: "stationery", name: "文具間尺", svg: SVG_LIB.stationery, type: "bag" },
-        { id: "paper", name: "廢紙團", svg: SVG_LIB.paper, type: "trash" },
-        { id: "candy", name: "垃圾糖紙", svg: SVG_LIB.candy_trash, type: "trash" },
+        { id: "stationery", name: "文具", svg: SVG_LIB.stationery, type: "bag" },
         { id: "plush", name: "毛公仔", svg: SVG_LIB.plush_toy, type: "home" },
-        { id: "car", name: "玩具車", svg: SVG_LIB.car, type: "home" }
+        { id: "robot", name: "機械人", svg: SVG_LIB.robot, type: "home" },
+        { id: "car", name: "玩具車", svg: SVG_LIB.car, type: "home" },
+        { id: "paper", name: "廢紙", svg: SVG_LIB.paper, type: "trash" },
+        { id: "candy", name: "垃圾糖紙", svg: SVG_LIB.candy_trash, type: "trash" },
+        { id: "banana", name: "蕉皮", svg: SVG_LIB.banana_peel, type: "trash" }
       ]
     },
     {
       title: "第二關：按表執書包",
-      prompt: "咕嚕：「明天有『人文』和『音樂』課，請只將上學需要的東西放進書包，不要帶玩具和垃圾！」",
-      timer: null, // 執書包挑戰不限時，考驗準確度
+      prompt: "咕嚕：「明天有 <span class='highlight-text'>上人文課、體育課</span>，請把需要帶的東西放進書包，不要帶其他東西！」",
       mode: "packing",
       leoSvg: SVG_LIB.leoHappy,
       items: [
         { id: "book", name: "人文書", svg: SVG_LIB.book, type: "bag" },
-        { id: "music", name: "音樂書", svg: SVG_LIB.music_book, type: "bag" },
-        { id: "stationery", name: "文具間尺", svg: SVG_LIB.stationery, type: "bag" },
-        { id: "candy", name: "垃圾糖紙", svg: SVG_LIB.candy_trash, type: "trash" },
-        { id: "robot", name: "機械人", svg: SVG_LIB.robot, type: "home" }
+        { id: "pe_uniform", name: "體育服", svg: SVG_LIB.pe_uniform, type: "bag" },
+        { id: "stationery", name: "文具", svg: SVG_LIB.stationery, type: "bag" },
+        { id: "music", name: "音樂書", svg: SVG_LIB.music_book, type: "home" },
+        { id: "school_uniform", name: "校服", svg: SVG_LIB.school_uniform, type: "home" },
+        { id: "beyblade", name: "爆旋陀螺", svg: SVG_LIB.beyblade, type: "home" }
       ]
     },
     {
       title: "第三關：五星特工大判斷",
       prompt: "咕嚕：「這種行為有沒有責任感呢？請判斷 ⭕ 或 ❌！」",
-      timer: null,
       mode: "choice",
       leoSvg: SVG_LIB.leoHappy,
       items: [
-        { id: "c1", name: "明仔讓媽媽幫忙收拾書包，自己睇電視。", svg: SVG_LIB.scene_cross, answer: "cross" },
-        { id: "c2", name: "小花看到座位下有廢紙，主動撿起丟垃圾桶。", svg: SVG_LIB.scene_circle1, answer: "circle" },
-        { id: "c3", name: "看到同學掉擦膠，主動提醒或幫忙撿起。", svg: SVG_LIB.scene_circle2, answer: "circle" }
+        { id: "c1", name: "明仔讓媽媽幫忙收拾書包，自己睇電視。", svg: SVG_LIB.scene_q1, answer: "cross" },
+        { id: "c2", name: "小花看到座位下有廢紙，主動撿起丟垃圾桶。", svg: SVG_LIB.scene_q2, answer: "circle" },
+        { id: "c3", name: "看到同學掉文具，主動提醒或幫忙撿起。", svg: SVG_LIB.scene_q3, answer: "circle" }
       ]
     }
   ];
@@ -278,14 +281,14 @@
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
         osc.start(); osc.stop(audioCtx.currentTime + 0.3);
       } else if (type === 'wrong') {
-        osc.type = 'sawtooth'; // 答錯用鋸齒波，聲音較尖銳
+        osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(250, audioCtx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
         gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
         osc.start(); osc.stop(audioCtx.currentTime + 0.3);
       }
-    } catch(e) { console.error(e); }
+    } catch(e) {}
   }
 
   // 🎯 遊戲狀態管理
@@ -334,7 +337,7 @@
       targets.classList.remove('hidden');
       choice.classList.add('hidden');
       
-      // 關卡2只顯示書包
+      // 關卡2執書包只顯示書包
       document.getElementById('zone-trash').style.display = (lvl.mode === 'packing') ? 'none' : 'block';
       document.getElementById('zone-home').style.display = (lvl.mode === 'packing') ? 'none' : 'block';
 
@@ -387,7 +390,7 @@
   }
 
   function handleTargetClick(targetType) {
-    if (!selectedItem) { alert('請先點選上面的物品！'); return; }
+    if (!selectedItem) { alert('請先點選或拖拽上面的物品！'); return; }
     processAnswer(targetType);
   }
   
@@ -395,7 +398,7 @@
     const lvl = LEVELS_DATA[currentLvlIdx];
     let isCorrect = false;
 
-    // 判斷邏輯：分類模式必須對應容器；執書包模式只能把 bag 物品放入書包
+    // 關卡 1：分類判斷；關卡 2：只能將 bag 類放入書包
     if (lvl.mode === 'sorting') {
         isCorrect = (selectedItem.type === targetType);
     } else if (lvl.mode === 'packing') {
@@ -411,11 +414,10 @@
       remainingItems = remainingItems.filter(i => i.id !== selectedItem.id);
       selectedItem = null;
 
-      // 檢查是否完成
       if (lvl.mode === 'sorting' && remainingItems.length === 0) {
           checkLevelComplete();
       } else if (lvl.mode === 'packing' && remainingItems.filter(i => i.type === 'bag').length === 0) {
-          // 如果是執書包，只要書包類物品清空即過關
+          // 關卡 2：書包物品收完就過關，剩下的玩具留在原地
           checkLevelComplete();
       }
     } else {
@@ -423,7 +425,7 @@
       const cardEl = document.getElementById(`card-${selectedItem.id}`);
       if(cardEl) {
         cardEl.classList.remove('shake');
-        void cardEl.offsetWidth; // 觸發重繪以重啟動畫
+        void cardEl.offsetWidth;
         cardEl.classList.add('shake');
       }
     }
@@ -434,8 +436,8 @@
     const item = remainingItems[0];
     document.getElementById('items-pool').innerHTML = `
       <div class="item-card" style="width:90%; max-width:400px; padding:20px; font-size:16px; cursor:default; background:#FAFAFA;">
-        <div style="width:100%; height:120px; display:flex; justify-content:center; align-items:center; margin-bottom:15px; border-radius:10px; background:white; box-shadow:inset 0 2px 5px rgba(0,0,0,0.05);">
-          <div style="width:160px; height:100px;">${item.svg}</div>
+        <div style="width:100%; height:130px; display:flex; justify-content:center; align-items:center; margin-bottom:15px; border-radius:10px; background:white; box-shadow:inset 0 2px 5px rgba(0,0,0,0.05);">
+          <div style="width:200px; height:120px;">${item.svg}</div>
         </div>
         <div style="font-weight:bold; color:var(--primary-dark); font-size:18px;">${item.name}</div>
       </div>
@@ -477,7 +479,7 @@
   }
 
   function saveScore() {
-    const name = document.getElementById('player-name').value.trim() || '責任特工';
+    const name = document.getElementById('player-name').value.trim() || '特工';
     const records = JSON.parse(localStorage.getItem('agent_leaderboard') || '[]');
     records.push({ name, score });
     records.sort((a, b) => b.score - a.score);
