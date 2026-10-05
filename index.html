@@ -31,7 +31,7 @@
 
     /* 頂部狀態列 */
     .stats-bar {
-      display: flex; justify-content: space-around; background: rgba(255,255,255,0.9); padding: 10px;
+      display: flex; justify-content: space-around; background: rgba(255,255,255,0.95); padding: 10px;
       font-size: 18px; font-weight: bold; color: #333; z-index: 10; position: relative;
       border-bottom: 2px solid #E0E0E0;
     }
@@ -40,17 +40,17 @@
     .game-area {
       position: relative;
       width: 100%;
-      height: 520px; /* 完美匹配 4:3 背景圖片比例 */
+      height: 520px; /* 匹配背景圖片比例 */
       background-color: #f0f0f0;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
     }
 
-    /* 👻 隱形感應區 (Drop Zones) - 預設帶有白色半透明虛線框，方便你測試測試 */
+    /* 👻 隱形感應區 (Drop Zones) */
     .drop-zone {
       position: absolute;
-      border: 3px dashed rgba(255, 255, 255, 0.7);
+      border: 3px dashed rgba(255, 255, 255, 0.7); /* 帶有白色半透明虛線框，方便測試對位 */
       border-radius: 15px;
       z-index: 5;
       transition: all 0.2s;
@@ -168,11 +168,11 @@
 </div>
 
 <script>
-  // 🎮 遊戲關卡資料庫
+  // 🎮 遊戲關卡資料庫 (注意：背景圖副檔名跟隨 GitHub 的大寫 JPEG / JPG)
   const LEVELS_DATA = [
     {
       title: "第一關：物品大分類",
-      bgImage: "bg_level1.jpg", // 對應你上傳的 1.jpg（有咕嚕、書包、玩具箱、垃圾桶）
+      bgImage: "bg_level1.JPEG", // 對應 GitHub 上的 bg_level1.JPEG
       mode: "sorting",
       items: [
         { id: "book", name: "人文書", img: "item_book.png", type: "bag" },
@@ -188,7 +188,7 @@
     },
     {
       title: "第二關：按表執書包",
-      bgImage: "bg_level2.jpg", // 對應你上傳的 2.jpg（只有正中間的空白書包）
+      bgImage: "bg_level2.JPG", // 對應 GitHub 上的 bg_level2.JPG
       mode: "packing",
       promptHtml: "明日課表：<br><span class='highlight-tag'>上人文課</span><br><span class='highlight-tag'>上體育課</span><br><span style='font-size:16px; color:#333;'>請把需要的物品放入書包</span>",
       items: [
@@ -261,14 +261,14 @@
     const zoneTrash = document.getElementById('zone-trash');
     const zoneHome = document.getElementById('zone-home');
 
-    // 🎯 精準對齊兩張真實圖片的絕對座標設定 (Calibrated Coordinates)
+    // 🎯 對齊兩張真實圖片的座標設定
     if (idx === 0) {
-      // 對應第一張圖 (1.jpg)：書包左下、玩具箱中下、垃圾桶右下[span_4](start_span)[span_4](end_span)
+      // 第一關 (bg_level1.JPEG)：書包左下、玩具箱中下、垃圾桶右下
       zoneBag.style.cssText = "top: 52%; left: 3%; width: 30%; height: 44%; display: block;";
       zoneHome.style.cssText = "top: 68%; left: 47%; width: 28%; height: 28%; display: block;";
       zoneTrash.style.cssText = "top: 60%; left: 79%; width: 19%; height: 36%; display: block;";
     } else {
-      // 對應第二張圖 (2.jpg)：書包移至正中間下半部[span_5](start_span)[span_5](end_span)
+      // 第二關 (bg_level2.JPG)：書包移至正中間下半部
       zoneBag.style.cssText = "top: 52%; left: 36%; width: 28%; height: 42%; display: block;";
       zoneHome.style.display = "none";
       zoneTrash.style.display = "none";
@@ -285,14 +285,14 @@
       card.draggable = true;
       card.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'; this.nextSibling.style.display='block';"><div class="item-name">${item.name}</div>`;
       
-      // 點選邏輯 (支援平板/電腦)
+      // 點選邏輯 (支援電子白板 Touch / 滑鼠點擊)
       card.onclick = () => {
         document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         selectedItem = item;
       };
 
-      // 拖拽邏輯
+      // 拖拽邏輯 (支援電腦拖放)
       card.ondragstart = (e) => {
         e.dataTransfer.setData('text/plain', item.id);
         selectedItem = item;
