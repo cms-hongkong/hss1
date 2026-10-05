@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>責任感特工大行動 - 16:9 橫屏白板版</title>
+  <title>責任感特工大行動 - A4 橫向白板版</title>
   <style>
     :root {
       --primary-dark: #2E7D32;
@@ -34,7 +34,7 @@
       background: var(--primary-dark); 
       color: white; 
       width: 100%; 
-      max-width: 1000px;
+      max-width: 900px;
       text-align: center; 
       padding: 8px 0; 
       border-radius: 12px 12px 0 0;
@@ -42,9 +42,9 @@
     }
     h1 { margin: 0; font-size: 22px; }
 
-    /* 🎮 橫向 16:9 遊戲主容器 */
+    /* 🎮 精準 A4 橫向比例 (297:210) 遊戲主容器 */
     .container {
-      max-width: 1000px; 
+      max-width: 900px; 
       width: 100%; 
       background: white; 
       padding: 0;
@@ -55,7 +55,8 @@
       text-align: center;
       position: relative;
       overflow: hidden;
-      aspect-ratio: 16 / 9;
+      /* 🎯 鎖定 A4 橫屏 297:210 完美比例 */
+      aspect-ratio: 297 / 210;
       display: flex;
       flex-direction: column;
     }
@@ -73,32 +74,31 @@
       z-index: 20; 
       position: relative;
       border-bottom: 2px solid #E0E0E0;
-      height: 40px;
+      height: 38px;
     }
 
-    /* 🎮 橫屏遊戲場景區域 */
+    /* 🎮 遊戲場景區域 (A4 完全對應) */
     .game-area {
       position: relative;
       width: 100%;
       flex: 1;
       background-color: #f0f0f0;
-      background-size: cover;
+      background-size: 100% 100%; /* 確保 A4 背景圖片 100% 顯示，不裁切上下 */
       background-position: center;
       background-repeat: no-repeat;
     }
 
-    /* 👻 完全透明隱形感應區 (已移除虛線) */
+    /* 👻 完全透明感應區 */
     .drop-zone {
       position: absolute;
-      border: none; /* 移除虛線框架 */
+      border: none;
       border-radius: 15px;
       z-index: 5;
       transition: all 0.2s;
       cursor: pointer;
     }
-    /* 當物品拖拽到感應區上方時，發出微弱綠光提示 */
     .drop-zone.drag-over {
-      background-color: rgba(76, 175, 80, 0.3);
+      background-color: rgba(76, 175, 80, 0.35);
       border: 3px dashed #4CAF50;
       transform: scale(1.02);
     }
@@ -106,34 +106,34 @@
     /* 待分類物品池 */
     .items-pool {
       position: absolute;
-      top: 10px;
+      top: 8px;
       left: 2%;
       width: 96%;
       display: flex; 
       flex-wrap: wrap; 
       justify-content: center; 
       align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
+      gap: 6px;
+      padding: 6px 10px;
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(4px);
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       z-index: 10;
-      max-height: 120px;
+      max-height: 110px;
       overflow-y: auto;
     }
 
     .item-card {
       background: white; 
-      padding: 5px 8px; 
+      padding: 4px 6px; 
       border-radius: 10px; 
       cursor: grab; 
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2); 
+      box-shadow: 0 3px 6px rgba(0,0,0,0.18); 
       display: flex; 
       flex-direction: column;
       align-items: center; 
-      width: 75px; 
+      width: 70px; 
       border: 2px solid transparent; 
       transition: all 0.2s;
     }
@@ -144,8 +144,8 @@
       background-color: #E3F2FD;
       transform: scale(1.08); 
     }
-    .item-card img { width: 48px; height: 48px; object-fit: contain; pointer-events: none; }
-    .item-name { font-size: 12px; font-weight: bold; color: #333; pointer-events: none; margin-top: 2px; }
+    .item-card img { width: 42px; height: 42px; object-fit: contain; pointer-events: none; }
+    .item-name { font-size: 11px; font-weight: bold; color: #333; pointer-events: none; margin-top: 2px; }
 
     /* 答錯震動動畫 */
     @keyframes shake {
@@ -206,7 +206,7 @@
 <body>
 
 <header>
-  <h1>🕵🏻‍♂️ 責任感特工大行動 (橫向白板版)</h1>
+  <h1>🕵🏻‍♂️ 責任感特工大行動 (A4 專屬白板版)</h1>
 </header>
 
 <div class="container">
@@ -227,7 +227,6 @@
 
     <!-- 遊戲互動區 -->
     <div class="game-area" id="game-area">
-      <!-- 提示文字 (第二關用) -->
       <div id="level-prompt" class="level-prompt"></div>
 
       <!-- 待分類物品池 -->
@@ -286,7 +285,7 @@
     }
   ];
 
-  // 🔊 Web Audio API 音效產生器
+  // 🔊 音效產生器
   let audioCtx = null;
   function playSound(type) {
     try {
@@ -343,12 +342,13 @@
     const zoneTrash = document.getElementById('zone-trash');
     const zoneHome = document.getElementById('zone-home');
 
+    // 🎯 A4 橫向比例專屬對齊座標
     if (idx === 0) {
-      zoneBag.style.cssText = "top: 50%; left: 3%; width: 30%; height: 46%; display: block;";
-      zoneHome.style.cssText = "top: 66%; left: 47%; width: 28%; height: 30%; display: block;";
-      zoneTrash.style.cssText = "top: 58%; left: 79%; width: 19%; height: 38%; display: block;";
+      zoneBag.style.cssText = "top: 55%; left: 3%; width: 30%; height: 42%; display: block;";
+      zoneHome.style.cssText = "top: 70%; left: 47%; width: 28%; height: 28%; display: block;";
+      zoneTrash.style.cssText = "top: 62%; left: 78%; width: 20%; height: 35%; display: block;";
     } else {
-      zoneBag.style.cssText = "top: 50%; left: 36%; width: 28%; height: 45%; display: block;";
+      zoneBag.style.cssText = "top: 52%; left: 35%; width: 30%; height: 44%; display: block;";
       zoneHome.style.display = "none";
       zoneTrash.style.display = "none";
     }
