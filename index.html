@@ -16,7 +16,7 @@
       font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; 
       margin: 0; 
       padding: 0;
-      user-select: none; /* 防止白板按壓時誤選文字 */
+      user-select: none;
       -webkit-user-select: none;
     }
 
@@ -55,7 +55,6 @@
       text-align: center;
       position: relative;
       overflow: hidden;
-      /* 鎖定 16:9 橫向比例 */
       aspect-ratio: 16 / 9;
       display: flex;
       flex-direction: column;
@@ -81,29 +80,30 @@
     .game-area {
       position: relative;
       width: 100%;
-      flex: 1; /* 自動填滿 16:9 剩餘空間 */
+      flex: 1;
       background-color: #f0f0f0;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
     }
 
-    /* 👻 隱形感應區 (Drop Zones) */
+    /* 👻 完全透明隱形感應區 (已移除虛線) */
     .drop-zone {
       position: absolute;
-      border: 3px dashed rgba(255, 255, 255, 0.75); /* 白色虛線框，方便白板對位 */
+      border: none; /* 移除虛線框架 */
       border-radius: 15px;
       z-index: 5;
       transition: all 0.2s;
       cursor: pointer;
     }
+    /* 當物品拖拽到感應區上方時，發出微弱綠光提示 */
     .drop-zone.drag-over {
-      background-color: rgba(76, 175, 80, 0.4);
+      background-color: rgba(76, 175, 80, 0.3);
       border: 3px dashed #4CAF50;
       transform: scale(1.02);
     }
 
-    /* 待分類物品池 (橫向頂部浮動排列) */
+    /* 待分類物品池 */
     .items-pool {
       position: absolute;
       top: 10px;
@@ -182,7 +182,6 @@
     }
     .hidden { display: none !important; }
     
-    /* 第二關課表提示字樣 (橫版優化) */
     .level-prompt {
       position: absolute;
       top: 110px;
@@ -234,7 +233,7 @@
       <!-- 待分類物品池 -->
       <div id="items-pool" class="items-pool"></div>
 
-      <!-- 👻 隱形感應區 (座標依據橫向比例精準設定) -->
+      <!-- 👻 隱形感應區 -->
       <div class="drop-zone" id="zone-bag" data-type="bag" onclick="handleTargetClick('bag')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'bag')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
       <div class="drop-zone" id="zone-trash" data-type="trash" onclick="handleTargetClick('trash')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'trash')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
       <div class="drop-zone" id="zone-home" data-type="home" onclick="handleTargetClick('home')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'home')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
@@ -253,7 +252,7 @@
 </div>
 
 <script>
-  // 🎮 遊戲關卡資料庫 (對應 GitHub 的真實檔名大寫)
+  // 🎮 遊戲關卡資料庫
   const LEVELS_DATA = [
     {
       title: "第一關：物品大分類",
@@ -308,7 +307,6 @@
     } catch(e) {}
   }
 
-  // 洗牌演算法
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -338,7 +336,6 @@
     document.getElementById('mission-txt').innerText = lvl.title;
     document.getElementById('score-txt').innerText = score;
     
-    // 設置背景圖片
     document.getElementById('game-area').style.backgroundImage = `url('${lvl.bgImage}')`;
     document.getElementById('level-prompt').innerHTML = lvl.promptHtml ? lvl.promptHtml : "";
 
@@ -346,14 +343,11 @@
     const zoneTrash = document.getElementById('zone-trash');
     const zoneHome = document.getElementById('zone-home');
 
-    // 🎯 橫屏 16:9 比例專屬對齊座標
     if (idx === 0) {
-      // 第一關：書包左下、玩具箱中下、垃圾桶右下
       zoneBag.style.cssText = "top: 50%; left: 3%; width: 30%; height: 46%; display: block;";
       zoneHome.style.cssText = "top: 66%; left: 47%; width: 28%; height: 30%; display: block;";
       zoneTrash.style.cssText = "top: 58%; left: 79%; width: 19%; height: 38%; display: block;";
     } else {
-      // 第二關：書包移至正中間下半部
       zoneBag.style.cssText = "top: 50%; left: 36%; width: 28%; height: 45%; display: block;";
       zoneHome.style.display = "none";
       zoneTrash.style.display = "none";
@@ -370,14 +364,12 @@
       card.draggable = true;
       card.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'; this.nextSibling.style.display='block';"><div class="item-name">${item.name}</div>`;
       
-      // 觸控 / 點選邏輯 (支援電子白板 Touch 及滑鼠)
       card.onclick = () => {
         document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         selectedItem = item;
       };
 
-      // 拖拽邏輯
       card.ondragstart = (e) => {
         e.dataTransfer.setData('text/plain', item.id);
         selectedItem = item;
