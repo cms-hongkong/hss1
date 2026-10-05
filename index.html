@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>責任感特工大行動 - A4 橫向白板版</title>
+  <title>責任感特工大行動</title>
   <style>
     :root {
       --primary-dark: #2E7D32;
@@ -42,7 +42,7 @@
     }
     h1 { margin: 0; font-size: 22px; }
 
-    /* 🎮 精準 A4 橫向比例 (297:210) 遊戲主容器 */
+    /* 🎮 A4 橫向比例 (297:210) 遊戲主容器 */
     .container {
       max-width: 900px; 
       width: 100%; 
@@ -55,7 +55,6 @@
       text-align: center;
       position: relative;
       overflow: hidden;
-      /* 🎯 鎖定 A4 橫屏 297:210 完美比例 */
       aspect-ratio: 297 / 210;
       display: flex;
       flex-direction: column;
@@ -77,13 +76,13 @@
       height: 38px;
     }
 
-    /* 🎮 遊戲場景區域 (A4 完全對應) */
+    /* 🎮 遊戲場景區域 */
     .game-area {
       position: relative;
       width: 100%;
       flex: 1;
       background-color: #f0f0f0;
-      background-size: 100% 100%; /* 確保 A4 背景圖片 100% 顯示，不裁切上下 */
+      background-size: 100% 100%;
       background-position: center;
       background-repeat: no-repeat;
     }
@@ -182,31 +181,39 @@
     }
     .hidden { display: none !important; }
     
+    /* 第二關提示字樣容器 */
     .level-prompt {
       position: absolute;
-      top: 110px;
+      top: 115px;
       width: 100%;
       text-align: center;
-      font-size: 20px;
-      font-weight: 900;
-      color: #D32F2F;
-      text-shadow: 2px 2px 0px white, -2px -2px 0px white, 2px -2px 0px white, -2px 2px 0px white;
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
       z-index: 8;
       pointer-events: none;
+      padding: 0 15px;
+      line-height: 1.6;
     }
-    .highlight-tag {
-      background: #FFCDD2;
-      padding: 2px 10px;
-      border-radius: 6px;
+
+    /* 🎯 紅字黑粗框專屬標籤樣式 */
+    .red-bold-box {
+      color: #D32F2F;
+      background-color: #FFFFFF;
+      border: 3px solid #000000;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 900;
       display: inline-block;
-      margin: 2px 4px;
+      margin: 0 3px;
+      box-shadow: 2px 2px 0px #000000;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>🕵🏻‍♂️ 責任感特工大行動 (A4 專屬白板版)</h1>
+  <h1>🕵🏻‍♂️ 責任感特工大行動</h1>
 </header>
 
 <div class="container">
@@ -270,10 +277,10 @@
       ]
     },
     {
-      title: "第二關：按表執書包",
+      title: "第二關：收拾書包",
       bgImage: "bg_level2.JPG",
       mode: "packing",
-      promptHtml: "明日課表：<span class='highlight-tag'>上人文課</span><span class='highlight-tag'>上體育課</span> (只將需要的物品放入書包)",
+      promptHtml: "明天要上<span class='red-bold-box'>人文課</span>及<span class='red-bold-box'>體育課</span>，將明天需要用的物品放入書包。",
       items: [
         { id: "book", name: "人文書", img: "item_book.png", type: "bag" },
         { id: "pe_uniform", name: "體育服", img: "item_pe.png", type: "bag" },
@@ -342,7 +349,7 @@
     const zoneTrash = document.getElementById('zone-trash');
     const zoneHome = document.getElementById('zone-home');
 
-    // 🎯 A4 橫向比例專屬對齊座標
+    // 🎯 A4 橫向座標對齊
     if (idx === 0) {
       zoneBag.style.cssText = "top: 55%; left: 3%; width: 30%; height: 42%; display: block;";
       zoneHome.style.cssText = "top: 70%; left: 47%; width: 28%; height: 28%; display: block;";
