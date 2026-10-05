@@ -76,6 +76,26 @@
       height: 38px;
     }
 
+    /* 🏠 主選單畫面 (支援 bg_menu.JPG 背景圖) */
+    #menu-screen {
+      background-image: url('bg_menu.JPG');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #f9f9f9;
+    }
+
+    /* 主選單中央內容卡片 (防背景圖太花) */
+    .menu-box {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(5px);
+      padding: 25px 35px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      max-width: 80%;
+      border: 2px solid #A5D6A7;
+    }
+
     /* 🎮 遊戲場景區域 */
     .game-area {
       position: relative;
@@ -196,7 +216,7 @@
       line-height: 1.6;
     }
 
-    /* 🎯 紅字黑粗框專屬標籤樣式 */
+    /* 紅字黑粗框標籤 */
     .red-bold-box {
       color: #D32F2F;
       background-color: #FFFFFF;
@@ -217,11 +237,13 @@
 </header>
 
 <div class="container">
-  <!-- 主選單 -->
+  <!-- 主選單 (支援背景圖) -->
   <div id="menu-screen" class="screen">
-    <h2 style="color:var(--primary-dark); font-size: 32px; margin-bottom: 15px;">特工任務準備就緒！</h2>
-    <p style="font-size: 18px; color: #555; margin-bottom: 20px;">請幫助咕嚕完成整理座位及收拾書包的考驗！</p>
-    <button class="btn" onclick="startLevel(0)">🚀 開始執行任務</button>
+    <div class="menu-box">
+      <h2 style="color:var(--primary-dark); font-size: 32px; margin-bottom: 15px;">特工任務準備就緒！</h2>
+      <p style="font-size: 18px; color: #444; margin-bottom: 15px; font-weight: bold;">請幫助咕嚕完成整理座位及收拾書包的考驗！</p>
+      <button class="btn" onclick="startLevel(0)">🚀 開始執行任務</button>
+    </div>
   </div>
 
   <!-- 遊戲主畫面 -->
