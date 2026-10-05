@@ -76,16 +76,16 @@
       height: 38px;
     }
 
-    /* 🏠 主選單畫面 (支援 bg_menu.JPG 背景圖) */
+    /* 🏠 主選單畫面 (對應 bg_menu.JPEG) */
     #menu-screen {
-      background-image: url('bg_menu.JPG');
+      background-image: url('bg_menu.JPEG');
       background-size: 100% 100%;
       background-position: center;
       background-repeat: no-repeat;
       background-color: #f9f9f9;
     }
 
-    /* 主選單中央內容卡片 (防背景圖太花) */
+    /* 主選單中央內容卡片 */
     .menu-box {
       background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(5px);
@@ -237,7 +237,7 @@
 </header>
 
 <div class="container">
-  <!-- 主選單 (支援背景圖) -->
+  <!-- 主選單 -->
   <div id="menu-screen" class="screen">
     <div class="menu-box">
       <h2 style="color:var(--primary-dark); font-size: 32px; margin-bottom: 15px;">特工任務準備就緒！</h2>
@@ -371,7 +371,6 @@
     const zoneTrash = document.getElementById('zone-trash');
     const zoneHome = document.getElementById('zone-home');
 
-    // 🎯 A4 橫向座標對齊
     if (idx === 0) {
       zoneBag.style.cssText = "top: 55%; left: 3%; width: 30%; height: 42%; display: block;";
       zoneHome.style.cssText = "top: 70%; left: 47%; width: 28%; height: 28%; display: block;";
