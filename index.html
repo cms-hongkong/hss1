@@ -2,45 +2,86 @@
 <html lang="zh-HK">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>責任感特工大行動 - 實景背景版</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>責任感特工大行動 - 16:9 橫屏白板版</title>
   <style>
     :root {
       --primary-dark: #2E7D32;
       --secondary: #FF9800;
+      --bg-color: #C8E6C9;
     }
 
-    * { box-sizing: border-box; font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; margin: 0; padding: 0; }
-    body { background-color: #C8E6C9; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
+    * { 
+      box-sizing: border-box; 
+      font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; 
+      margin: 0; 
+      padding: 0;
+      user-select: none; /* 防止白板按壓時誤選文字 */
+      -webkit-user-select: none;
+    }
+
+    body { 
+      background-color: var(--bg-color); 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center;
+      min-height: 100vh; 
+      padding: 10px; 
+    }
 
     header {
-      background: var(--primary-dark); color: white; width: 100%; max-width: 900px;
-      text-align: center; padding: 15px 0; border-radius: 16px 16px 0 0;
+      background: var(--primary-dark); 
+      color: white; 
+      width: 100%; 
+      max-width: 1000px;
+      text-align: center; 
+      padding: 8px 0; 
+      border-radius: 12px 12px 0 0;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    h1 { margin: 0; font-size: 24px; }
+    h1 { margin: 0; font-size: 22px; }
 
-    /* 遊戲主體容器 */
+    /* 🎮 橫向 16:9 遊戲主容器 */
     .container {
-      max-width: 900px; width: 100%; background: white; padding: 0;
-      border-radius: 0 0 16px 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-      border: 4px solid var(--primary-dark); border-top: none; text-align: center;
+      max-width: 1000px; 
+      width: 100%; 
+      background: white; 
+      padding: 0;
+      border-radius: 0 0 16px 16px; 
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      border: 4px solid var(--primary-dark); 
+      border-top: none; 
+      text-align: center;
       position: relative;
       overflow: hidden;
+      /* 鎖定 16:9 橫向比例 */
+      aspect-ratio: 16 / 9;
+      display: flex;
+      flex-direction: column;
     }
 
     /* 頂部狀態列 */
     .stats-bar {
-      display: flex; justify-content: space-around; background: rgba(255,255,255,0.95); padding: 10px;
-      font-size: 18px; font-weight: bold; color: #333; z-index: 10; position: relative;
+      display: flex; 
+      justify-content: space-around; 
+      align-items: center;
+      background: rgba(255,255,255,0.95); 
+      padding: 6px 15px;
+      font-size: 16px; 
+      font-weight: bold; 
+      color: #333; 
+      z-index: 20; 
+      position: relative;
       border-bottom: 2px solid #E0E0E0;
+      height: 40px;
     }
 
-    /* 🎮 遊戲場景區域 */
+    /* 🎮 橫屏遊戲場景區域 */
     .game-area {
       position: relative;
       width: 100%;
-      height: 520px; /* 匹配背景圖片比例 */
+      flex: 1; /* 自動填滿 16:9 剩餘空間 */
       background-color: #f0f0f0;
       background-size: cover;
       background-position: center;
@@ -50,60 +91,104 @@
     /* 👻 隱形感應區 (Drop Zones) */
     .drop-zone {
       position: absolute;
-      border: 3px dashed rgba(255, 255, 255, 0.7); /* 帶有白色半透明虛線框，方便測試對位 */
+      border: 3px dashed rgba(255, 255, 255, 0.75); /* 白色虛線框，方便白板對位 */
       border-radius: 15px;
       z-index: 5;
       transition: all 0.2s;
+      cursor: pointer;
     }
     .drop-zone.drag-over {
-      background-color: rgba(76, 175, 80, 0.35);
+      background-color: rgba(76, 175, 80, 0.4);
       border: 3px dashed #4CAF50;
+      transform: scale(1.02);
     }
 
-    /* 待分類物品池 (擺放在畫面偏上方空位) */
+    /* 待分類物品池 (橫向頂部浮動排列) */
     .items-pool {
       position: absolute;
-      top: 15px;
-      left: 0;
-      width: 100%;
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
-      padding: 10px;
+      top: 10px;
+      left: 2%;
+      width: 96%;
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       z-index: 10;
+      max-height: 120px;
+      overflow-y: auto;
     }
 
     .item-card {
-      background: rgba(255, 255, 255, 0.95); padding: 6px; border-radius: 12px; cursor: grab; user-select: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; flex-direction: column;
-      align-items: center; width: 85px; border: 2px solid transparent; transition: all 0.2s;
+      background: white; 
+      padding: 5px 8px; 
+      border-radius: 10px; 
+      cursor: grab; 
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2); 
+      display: flex; 
+      flex-direction: column;
+      align-items: center; 
+      width: 75px; 
+      border: 2px solid transparent; 
+      transition: all 0.2s;
     }
-    .item-card:hover { transform: translateY(-3px) scale(1.05); }
-    .item-card.selected { border: 3px solid #2196F3; transform: scale(1.08); }
-    .item-card img { width: 55px; height: 55px; object-fit: contain; pointer-events: none; }
-    .item-name { font-size: 13px; font-weight: bold; color: #333; pointer-events: none; margin-top: 3px; }
+    .item-card:active { cursor: grabbing; }
+    .item-card:hover { transform: translateY(-2px) scale(1.05); }
+    .item-card.selected { 
+      border: 3px solid #2196F3; 
+      background-color: #E3F2FD;
+      transform: scale(1.08); 
+    }
+    .item-card img { width: 48px; height: 48px; object-fit: contain; pointer-events: none; }
+    .item-name { font-size: 12px; font-weight: bold; color: #333; pointer-events: none; margin-top: 2px; }
 
     /* 答錯震動動畫 */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); border-color: red; }
-      50% { transform: translateX(5px); border-color: red; }
-      75% { transform: translateX(-5px); border-color: red; }
+      25% { transform: translateX(-6px); border-color: red; }
+      50% { transform: translateX(6px); border-color: red; }
+      75% { transform: translateX(-6px); border-color: red; }
     }
     .shake { animation: shake 0.4s ease-in-out; }
 
     /* 按鈕樣式 */
-    .btn { background: var(--secondary); color: white; border: none; padding: 12px 24px; font-size: 18px; font-weight: bold; border-radius: 25px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+    .btn { 
+      background: var(--secondary); 
+      color: white; 
+      border: none; 
+      padding: 12px 28px; 
+      font-size: 20px; 
+      font-weight: bold; 
+      border-radius: 30px; 
+      cursor: pointer; 
+      margin-top: 15px; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+      transition: transform 0.2s;
+    }
     .btn:hover { transform: scale(1.05); }
 
-    .screen { padding: 40px 20px; }
+    .screen { 
+      padding: 30px 20px; 
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
     .hidden { display: none !important; }
     
-    /* 第二關課表提示字樣 */
+    /* 第二關課表提示字樣 (橫版優化) */
     .level-prompt {
       position: absolute;
-      top: 130px;
+      top: 110px;
       width: 100%;
       text-align: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       color: #D32F2F;
       text-shadow: 2px 2px 0px white, -2px -2px 0px white, 2px -2px 0px white, -2px 2px 0px white;
@@ -112,29 +197,29 @@
     }
     .highlight-tag {
       background: #FFCDD2;
-      padding: 3px 10px;
+      padding: 2px 10px;
       border-radius: 6px;
       display: inline-block;
-      margin: 2px 0;
+      margin: 2px 4px;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>🕵🏻‍♂️ 責任感特工大行動</h1>
+  <h1>🕵🏻‍♂️ 責任感特工大行動 (橫向白板版)</h1>
 </header>
 
 <div class="container">
   <!-- 主選單 -->
   <div id="menu-screen" class="screen">
-    <h2 style="color:var(--primary-dark); font-size: 32px; margin-bottom: 20px;">特工任務準備就緒！</h2>
-    <p style="font-size: 18px; margin-bottom: 30px;">請幫助咕嚕完成整理座位及執書包的考驗！</p>
+    <h2 style="color:var(--primary-dark); font-size: 32px; margin-bottom: 15px;">特工任務準備就緒！</h2>
+    <p style="font-size: 18px; color: #555; margin-bottom: 20px;">請幫助咕嚕完成整理座位及收拾書包的考驗！</p>
     <button class="btn" onclick="startLevel(0)">🚀 開始執行任務</button>
   </div>
 
   <!-- 遊戲主畫面 -->
-  <div id="game-screen" class="hidden">
+  <div id="game-screen" class="hidden" style="height:100%; display:flex; flex-direction:column;">
     <div class="stats-bar">
       <div>關卡: <span id="current-level-txt">1/2</span></div>
       <div>任務: <span id="mission-txt" style="color:#1565C0;">物品大分類</span></div>
@@ -149,7 +234,7 @@
       <!-- 待分類物品池 -->
       <div id="items-pool" class="items-pool"></div>
 
-      <!-- 👻 隱形感應區 (座標會根據關卡由 JS 動態精準套用) -->
+      <!-- 👻 隱形感應區 (座標依據橫向比例精準設定) -->
       <div class="drop-zone" id="zone-bag" data-type="bag" onclick="handleTargetClick('bag')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'bag')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
       <div class="drop-zone" id="zone-trash" data-type="trash" onclick="handleTargetClick('trash')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'trash')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
       <div class="drop-zone" id="zone-home" data-type="home" onclick="handleTargetClick('home')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'home')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
@@ -159,8 +244,8 @@
   <!-- 通關結算 -->
   <div id="game-over-screen" class="screen hidden">
     <h2 style="color:var(--primary-dark); font-size: 36px;">🎉 任務完成！</h2>
-    <p style="font-size: 24px; margin: 20px 0;">最終得分：<span id="final-score" style="color:var(--secondary); font-weight:bold;">0</span> 分</p>
-    <div style="background:#FFE082; padding:15px; border-radius:10px; font-weight:bold; color:#D84315; font-size:24px; margin:20px auto; max-width:400px;">
+    <p style="font-size: 22px; margin: 15px 0;">最終得分：<span id="final-score" style="color:var(--secondary); font-weight:bold;">0</span> 分</p>
+    <div style="background:#FFE082; padding:12px 24px; border-radius:10px; font-weight:bold; color:#D84315; font-size:22px; margin:15px auto;">
       「自己的事，自己做！」
     </div>
     <button class="btn" onclick="location.reload()">🔄 重新開始</button>
@@ -168,11 +253,11 @@
 </div>
 
 <script>
-  // 🎮 遊戲關卡資料庫 (注意：背景圖副檔名跟隨 GitHub 的大寫 JPEG / JPG)
+  // 🎮 遊戲關卡資料庫 (對應 GitHub 的真實檔名大寫)
   const LEVELS_DATA = [
     {
       title: "第一關：物品大分類",
-      bgImage: "bg_level1.JPEG", // 對應 GitHub 上的 bg_level1.JPEG
+      bgImage: "bg_level1.JPEG",
       mode: "sorting",
       items: [
         { id: "book", name: "人文書", img: "item_book.png", type: "bag" },
@@ -188,9 +273,9 @@
     },
     {
       title: "第二關：按表執書包",
-      bgImage: "bg_level2.JPG", // 對應 GitHub 上的 bg_level2.JPG
+      bgImage: "bg_level2.JPG",
       mode: "packing",
-      promptHtml: "明日課表：<br><span class='highlight-tag'>上人文課</span><br><span class='highlight-tag'>上體育課</span><br><span style='font-size:16px; color:#333;'>請把需要的物品放入書包</span>",
+      promptHtml: "明日課表：<span class='highlight-tag'>上人文課</span><span class='highlight-tag'>上體育課</span> (只將需要的物品放入書包)",
       items: [
         { id: "book", name: "人文書", img: "item_book.png", type: "bag" },
         { id: "pe_uniform", name: "體育服", img: "item_pe.png", type: "bag" },
@@ -202,7 +287,7 @@
     }
   ];
 
-  // 🔊 音效產生器
+  // 🔊 Web Audio API 音效產生器
   let audioCtx = null;
   function playSound(type) {
     try {
@@ -223,7 +308,7 @@
     } catch(e) {}
   }
 
-  // 隨機打亂演算法
+  // 洗牌演算法
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -261,15 +346,15 @@
     const zoneTrash = document.getElementById('zone-trash');
     const zoneHome = document.getElementById('zone-home');
 
-    // 🎯 對齊兩張真實圖片的座標設定
+    // 🎯 橫屏 16:9 比例專屬對齊座標
     if (idx === 0) {
-      // 第一關 (bg_level1.JPEG)：書包左下、玩具箱中下、垃圾桶右下
-      zoneBag.style.cssText = "top: 52%; left: 3%; width: 30%; height: 44%; display: block;";
-      zoneHome.style.cssText = "top: 68%; left: 47%; width: 28%; height: 28%; display: block;";
-      zoneTrash.style.cssText = "top: 60%; left: 79%; width: 19%; height: 36%; display: block;";
+      // 第一關：書包左下、玩具箱中下、垃圾桶右下
+      zoneBag.style.cssText = "top: 50%; left: 3%; width: 30%; height: 46%; display: block;";
+      zoneHome.style.cssText = "top: 66%; left: 47%; width: 28%; height: 30%; display: block;";
+      zoneTrash.style.cssText = "top: 58%; left: 79%; width: 19%; height: 38%; display: block;";
     } else {
-      // 第二關 (bg_level2.JPG)：書包移至正中間下半部
-      zoneBag.style.cssText = "top: 52%; left: 36%; width: 28%; height: 42%; display: block;";
+      // 第二關：書包移至正中間下半部
+      zoneBag.style.cssText = "top: 50%; left: 36%; width: 28%; height: 45%; display: block;";
       zoneHome.style.display = "none";
       zoneTrash.style.display = "none";
     }
@@ -285,14 +370,14 @@
       card.draggable = true;
       card.innerHTML = `<img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'; this.nextSibling.style.display='block';"><div class="item-name">${item.name}</div>`;
       
-      // 點選邏輯 (支援電子白板 Touch / 滑鼠點擊)
+      // 觸控 / 點選邏輯 (支援電子白板 Touch 及滑鼠)
       card.onclick = () => {
         document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         selectedItem = item;
       };
 
-      // 拖拽邏輯 (支援電腦拖放)
+      // 拖拽邏輯
       card.ondragstart = (e) => {
         e.dataTransfer.setData('text/plain', item.id);
         selectedItem = item;
