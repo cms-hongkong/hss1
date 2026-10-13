@@ -25,7 +25,7 @@
       display: flex; 
       flex-direction: column; 
       align-items: center; 
-      justify-content: center;
+      justify-content: center; 
       min-height: 100vh; 
       padding: 10px; 
     }
@@ -76,7 +76,7 @@
       height: 38px;
     }
 
-    /* 🏠 主選單畫面 (對應 bg_menu.JPEG) */
+    /* 🏠 主選單畫面 */
     #menu-screen {
       background-image: url('bg_menu.JPEG');
       background-size: 100% 100%;
@@ -175,6 +175,36 @@
     }
     .shake { animation: shake 0.4s ease-in-out; }
 
+    /* 彈出提示標籤 (正確 / 再試一次) */
+    .feedback-toast {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-size: 26px;
+      font-weight: 900;
+      color: white;
+      z-index: 99;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      border: 3px solid #ffffff;
+      white-space: nowrap;
+    }
+    .feedback-toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .feedback-toast.correct {
+      background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    }
+    .feedback-toast.wrong {
+      background: linear-gradient(135deg, #F44336, #C62828);
+    }
+
     /* 按鈕樣式 */
     .btn { 
       background: var(--secondary); 
@@ -256,6 +286,9 @@
 
     <!-- 遊戲互動區 -->
     <div class="game-area" id="game-area">
+      <!-- 提示反饋浮層 -->
+      <div id="feedback-toast" class="feedback-toast"></div>
+
       <div id="level-prompt" class="level-prompt"></div>
 
       <!-- 待分類物品池 -->
@@ -320,19 +353,61 @@
     try {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+
       if (type === 'correct') {
-        osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        // ✨ BLING 清脆響鈴聲 (雙音琶音滑行)
+        [987.77, 1318.51].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+          gain.gain.setValueAtTime(0, now + idx * 0.08);
+          gain.gain.linearRampToValueAtTime(0.25, now + idx * 0.08 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.35);
+        });
       } else {
-        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        // ⚠️ DEE DEE 兩段式電子警告聲
+        [0, 0.12].forEach((delay) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180, now + delay);
+
+          gain.gain.setValueAtTime(0.18, now + delay);
+          gain.gain.setValueAtTime(0.18, now + delay + 0.07);
+          gain.gain.linearRampToValueAtTime(0.001, now + delay + 0.09);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now + delay);
+          osc.stop(now + delay + 0.09);
+        });
       }
     } catch(e) {}
+  }
+
+  // 💬 顯示文字提示 (正確 / 再試一次)
+  let feedbackTimer = null;
+  function showFeedback(type, text) {
+    const toast = document.getElementById('feedback-toast');
+    if (!toast) return;
+
+    toast.className = `feedback-toast ${type} show`;
+    toast.innerText = text;
+
+    clearTimeout(feedbackTimer);
+    feedbackTimer = setTimeout(() => {
+      toast.className = 'feedback-toast';
+    }, 700);
   }
 
   function shuffleArray(array) {
@@ -439,6 +514,7 @@
 
     if (isCorrect) {
       playSound('correct');
+      showFeedback('correct', '✨ 正確');
       score += 10;
       document.getElementById('score-txt').innerText = score;
       
@@ -453,6 +529,12 @@
       }
     } else {
       playSound('wrong');
+      showFeedback('wrong', '❌ 再試一次');
+      
+      // 答錯扣 5 分 (設有最低限制 0 分)
+      score = Math.max(0, score - 5);
+      document.getElementById('score-txt').innerText = score;
+
       const cardEl = document.getElementById(`card-${selectedItem.id}`);
       if(cardEl) {
         cardEl.classList.remove('shake');
