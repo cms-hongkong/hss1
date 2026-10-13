@@ -205,7 +205,7 @@
       background: linear-gradient(135deg, #F44336, #C62828);
     }
 
-    /* 🌈 大大隻字、彩色、佔半頁嘅過關讚賞彈窗 */
+    /* 🌈 彩色過關讚賞彈窗 */
     .modal-overlay {
       position: absolute;
       top: 0;
@@ -238,12 +238,11 @@
 
     .praise-stars {
       font-size: 40px;
-      animation: spinStars 3s linear infinite;
     }
 
     /* 彩虹漸變特大字體 */
     .praise-title {
-      font-size: 42px;
+      font-size: 44px;
       font-weight: 900;
       background: linear-gradient(45deg, #E91E63, #FF9800, #4CAF50, #2196F3, #9C27B0);
       background-size: 300% 300%;
@@ -390,11 +389,11 @@
       <div class="drop-zone" id="zone-trash" data-type="trash" onclick="handleTargetClick('trash')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'trash')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
       <div class="drop-zone" id="zone-home" data-type="home" onclick="handleTargetClick('home')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'home')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
 
-      <!-- 🌟 超大彩色過關讚賞彈窗 (佔多半頁) -->
+      <!-- 🌟 超大彩色過關讚賞彈窗 -->
       <div id="praise-modal" class="modal-overlay hidden">
         <div class="praise-card">
           <div class="praise-stars">✨ 🌟 🎖️ 🌟 ✨</div>
-          <div class="praise-title">太棒了！特工好厲害！</div>
+          <div class="praise-title">叻叻！特工好厲害！</div>
           <div class="praise-subtitle">👏 完美完成收拾任務！責任感滿分！</div>
           <button class="btn-next" onclick="nextLevelClicked()">🚀 進入下一關！</button>
         </div>
@@ -457,7 +456,7 @@
       const now = audioCtx.currentTime;
 
       if (type === 'correct') {
-        // ✨ BLING 清脆響鈴聲 (雙音琶音滑行)
+        // ✨ BLING 清脆響鈴聲
         [987.77, 1318.51].forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -551,7 +550,6 @@
     currentLvlIdx = idx;
     if (idx === 0) score = 0;
     
-    // 確保關閉過關彈窗
     document.getElementById('praise-modal').classList.add('hidden');
 
     showScreen('game-screen');
@@ -653,7 +651,6 @@
       playSound('wrong');
       showFeedback('wrong', '❌ 再試一次');
       
-      // 答錯扣 5 分 (最低 0 分)
       score = Math.max(0, score - 5);
       document.getElementById('score-txt').innerText = score;
 
@@ -670,7 +667,6 @@
   function checkLevelComplete() {
     setTimeout(() => {
       if (currentLvlIdx + 1 < LEVELS_DATA.length) {
-        // 彈出彩色超大字讚賞彈窗 (不再使用 alert)
         playSound('cheer');
         document.getElementById('praise-modal').classList.remove('hidden');
       } else {
