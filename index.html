@@ -175,18 +175,18 @@
     }
     .shake { animation: shake 0.4s ease-in-out; }
 
-    /* 彈出提示標籤 (正確 / 再試一次) */
+    /* 單次配對反饋提示 (正確 / 再試一次) */
     .feedback-toast {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.7);
-      padding: 12px 30px;
+      padding: 10px 26px;
       border-radius: 50px;
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
       color: white;
-      z-index: 99;
+      z-index: 80;
       pointer-events: none;
       opacity: 0;
       transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -203,6 +203,97 @@
     }
     .feedback-toast.wrong {
       background: linear-gradient(135deg, #F44336, #C62828);
+    }
+
+    /* 🌈 大大隻字、彩色、佔半頁嘅過關讚賞彈窗 */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .praise-card {
+      width: 82%;
+      min-height: 65%;
+      background: linear-gradient(145deg, #FFFFFF, #FFF9C4, #E8F5E9);
+      border: 6px solid #FFD54F;
+      border-radius: 28px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4), inset 0 0 15px rgba(255,213,79,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+      padding: 25px 20px;
+      animation: popBounce 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .praise-stars {
+      font-size: 40px;
+      animation: spinStars 3s linear infinite;
+    }
+
+    /* 彩虹漸變特大字體 */
+    .praise-title {
+      font-size: 42px;
+      font-weight: 900;
+      background: linear-gradient(45deg, #E91E63, #FF9800, #4CAF50, #2196F3, #9C27B0);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: rainbowFlow 4s ease infinite;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 10px rgba(255,193,7,0.3);
+      line-height: 1.2;
+    }
+
+    .praise-subtitle {
+      font-size: 24px;
+      font-weight: bold;
+      color: #D84315;
+      background: #FFF3E0;
+      padding: 6px 20px;
+      border-radius: 30px;
+      border: 2px dashed #FF9800;
+    }
+
+    .btn-next {
+      background: linear-gradient(135deg, #FF6F00, #FFB300);
+      color: white;
+      font-size: 26px;
+      font-weight: 900;
+      padding: 12px 38px;
+      border: 4px solid white;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 111, 0, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-next:hover {
+      transform: scale(1.08);
+      box-shadow: 0 10px 25px rgba(255, 111, 0, 0.6);
+    }
+
+    @keyframes rainbowFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes popBounce {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     /* 按鈕樣式 */
@@ -298,6 +389,16 @@
       <div class="drop-zone" id="zone-bag" data-type="bag" onclick="handleTargetClick('bag')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'bag')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
       <div class="drop-zone" id="zone-trash" data-type="trash" onclick="handleTargetClick('trash')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'trash')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
       <div class="drop-zone" id="zone-home" data-type="home" onclick="handleTargetClick('home')" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'home')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"></div>
+
+      <!-- 🌟 超大彩色過關讚賞彈窗 (佔多半頁) -->
+      <div id="praise-modal" class="modal-overlay hidden">
+        <div class="praise-card">
+          <div class="praise-stars">✨ 🌟 🎖️ 🌟 ✨</div>
+          <div class="praise-title">太棒了！特工好厲害！</div>
+          <div class="praise-subtitle">👏 完美完成收拾任務！責任感滿分！</div>
+          <button class="btn-next" onclick="nextLevelClicked()">🚀 進入下一關！</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -373,6 +474,24 @@
           osc.start(now + idx * 0.08);
           osc.stop(now + idx * 0.08 + 0.35);
         });
+      } else if (type === 'cheer') {
+        // 🎉 通關歡慶和弦聲
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+
+          gain.gain.setValueAtTime(0, now + idx * 0.09);
+          gain.gain.linearRampToValueAtTime(0.25, now + idx * 0.09 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.6);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now + idx * 0.09);
+          osc.stop(now + idx * 0.09 + 0.6);
+        });
       } else {
         // ⚠️ DEE DEE 兩段式電子警告聲
         [0, 0.12].forEach((delay) => {
@@ -432,6 +551,9 @@
     currentLvlIdx = idx;
     if (idx === 0) score = 0;
     
+    // 確保關閉過關彈窗
+    document.getElementById('praise-modal').classList.add('hidden');
+
     showScreen('game-screen');
     const lvl = LEVELS_DATA[idx];
     
@@ -531,7 +653,7 @@
       playSound('wrong');
       showFeedback('wrong', '❌ 再試一次');
       
-      // 答錯扣 5 分 (設有最低限制 0 分)
+      // 答錯扣 5 分 (最低 0 分)
       score = Math.max(0, score - 5);
       document.getElementById('score-txt').innerText = score;
 
@@ -544,17 +666,24 @@
     }
   }
 
+  // 檢查通關
   function checkLevelComplete() {
     setTimeout(() => {
-      currentLvlIdx++;
-      if (currentLvlIdx < LEVELS_DATA.length) {
-        alert('🎉 太棒了！進入下一關！');
-        startLevel(currentLvlIdx);
+      if (currentLvlIdx + 1 < LEVELS_DATA.length) {
+        // 彈出彩色超大字讚賞彈窗 (不再使用 alert)
+        playSound('cheer');
+        document.getElementById('praise-modal').classList.remove('hidden');
       } else {
         document.getElementById('final-score').innerText = score;
         showScreen('game-over-screen');
       }
     }, 400);
+  }
+
+  // 點擊彈窗的「進入下一關」按鈕
+  function nextLevelClicked() {
+    document.getElementById('praise-modal').classList.add('hidden');
+    startLevel(currentLvlIdx + 1);
   }
 </script>
 </body>
